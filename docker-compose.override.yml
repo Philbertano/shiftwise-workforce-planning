@@ -1,0 +1,45 @@
+# Development override for docker-compose
+# This file is automatically loaded in development
+
+version: '3.8'
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: shiftwise_dev
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://dev_user:dev_password@postgres:5432/shiftwise_dev
+      LOG_LEVEL: debug
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+  frontend:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+    ports:
+      - "5173:5173"
+
+# Remove nginx in development
+profiles:
+  - production
