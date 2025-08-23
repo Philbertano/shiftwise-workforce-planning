@@ -128,7 +128,15 @@ export class GreedyConstraintSolver implements IConstraintSolver {
         }
       }
 
-      // Phase 3: Optimization through beneficial swaps
+      // Phase 3: Validate minimum staffing levels
+      const staffingViolations = this.validateMinimumStaffing(
+        assignments,
+        problem.demands,
+        problem.context.staffingRequirements
+      );
+      violations.push(...staffingViolations);
+
+      // Phase 4: Optimization through beneficial swaps
       if (assignments.length > 1) {
         try {
           const optimizedAssignments = await this.optimizationService.optimizeAssignments(
@@ -268,10 +276,17 @@ export class GreedyConstraintSolver implements IConstraintSolver {
       if (!isAvailable) continue;
 
       // Check skill requirements
+      const shiftSkillRequirements = this.getShiftSkillRequirements(
+        demand,
+        problem.context.staffingRequirements,
+        problem.context.skillRequirements
+      );
+      
       const hasRequiredSkills = this.hasRequiredSkills(
         employee,
         station,
-        problem.context.employeeSkills
+        problem.context.employeeSkills,
+        shiftSkillRequirements
       );
       if (!hasRequiredSkills) continue;
 
@@ -403,12 +418,21 @@ export class GreedyConstraintSolver implements IConstraintSolver {
   private hasRequiredSkills(
     employee: Employee,
     station: Station,
-    employeeSkills: EmployeeSkill[]
+    employeeSkills: EmployeeSkill[],
+    shiftSkillRequirements?: ShiftSkillRequirement[]
   ): boolean {
     const empSkills = employeeSkills.filter(s => s.employeeId === employee.id);
     
+    // Use shift-specific skill requirements if available, otherwise fall back to station requirements
+    const skillRequirements = shiftSkillRequirements || station.requiredSkills.map(rs => ({
+      skillId: rs.skillId,
+      minLevel: rs.minLevel,
+      requiredCount: rs.count,
+      mandatory: rs.mandatory
+    }));
+    
     // Check each required skill
-    for (const requiredSkill of station.requiredSkills) {
+    for (const requiredSkill of skillRequirements) {
       if (!requiredSkill.mandatory) continue;
       
       const empSkill = empSkills.find(s => s.skillId === requiredSkill.skillId);
@@ -620,6 +644,123 @@ export class GreedyConstraintSolver implements IConstraintSolver {
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
     return date;
+  }
+
+  /**
+   * Get shift-specific skill requirements for a demand
+   */
+  private getShiftSkillRequirements(
+    demand: ShiftDemand,
+    staffingRequirements?: ShiftStaffingRequirement[],
+    skillRequirements?: ShiftSkillRequirement[]
+  ): ShiftSkillRequirement[] | undefined {
+    if (!staffingRequirements || !skillRequirements) {
+      return undefined;
+    }
+    
+    // Find the staffing requirement for this demand
+    const staffingReq = staffingRequirements.find(sr => 
+      sr.stationId === demand.stationId && 
+      sr.shiftTemplateId === demand.shiftTemplateId &&
+      sr.isActiveForDate(demand.date)
+    );
+    
+    if (!staffingReq) {
+      return undefined;
+    }
+    
+    // Return skill requirements for this staffing requirement
+    return skillRequirements.filter(sr => sr.staffingRequirementId === staffingReq.id);
+  }
+
+  /**
+   * Check if minimum staffing levels are met
+   */
+  private validateMinimumStaffing(
+    assignments: Assignment[],
+    demands: ShiftDemand[],
+    staffingRequirements?: ShiftStaffingRequirement[]
+  ): ConstraintViolation[] {
+    const violations: ConstraintViolation[] = [];
+    
+    if (!staffingRequirements) {
+      return violations;
+    }
+    
+    for (const demand of demands) {
+      const staffingReq = staffingRequirements.find(sr => 
+        sr.stationId === demand.stationId && 
+        sr.shiftTemplateId === demand.shiftTemplateId &&
+        sr.isActiveForDate(demand.date)
+      );
+      
+      if (!staffingReq) continue;
+      
+      const assignedCount = assignments.filter(a => a.demandId === demand.id).length;
+      const gap = staffingReq.getStaffingGap(assignedCount);
+      
+      if (gap > 0) {
+        violations.push({
+          constraintId: 'minimum_staffing',
+          severity: staffingReq.priority === Priority.CRITICAL ? 'critical' : 'error',
+          message: `Station requires ${staffingReq.minEmployees} employees but only ${assignedCount} assigned`,
+          affectedAssignments: assignments.filter(a => a.demandId === demand.id).map(a => a.id),
+          suggestedActions: [
+            'Assign additional qualified employees',
+            'Review skill requirements',
+            'Consider overtime or temporary staff'
+          ]
+        } as ConstraintViolation);
+      }
+    }
+    
+    return violations;
+  }
+
+  /**
+   * Detect coverage gaps based on staffing requirements
+   */
+  private detectCoverageGaps(
+    assignments: Assignment[],
+    demands: ShiftDemand[],
+    staffingRequirements?: ShiftStaffingRequirement[]
+  ): CoverageGap[] {
+    const gaps: CoverageGap[] = [];
+    
+    if (!staffingRequirements) {
+      return gaps;
+    }
+    
+    for (const demand of demands) {
+      const staffingReq = staffingRequirements.find(sr => 
+        sr.stationId === demand.stationId && 
+        sr.shiftTemplateId === demand.shiftTemplateId &&
+        sr.isActiveForDate(demand.date)
+      );
+      
+      if (!staffingReq) continue;
+      
+      const assignedCount = assignments.filter(a => a.demandId === demand.id).length;
+      const staffingStatus = staffingReq.getStaffingStatus(assignedCount);
+      
+      if (staffingStatus.status === 'understaffed') {
+        gaps.push({
+          demandId: demand.id,
+          stationName: 'Unknown Station', // TODO: Get from station data
+          shiftTime: 'Unknown Time', // TODO: Get from shift template
+          criticality: staffingReq.priority,
+          reason: staffingStatus.message,
+          suggestedActions: [
+            'Review employee availability',
+            'Check skill requirements',
+            'Consider overtime assignments',
+            'Hire temporary staff if needed'
+          ]
+        });
+      }
+    }
+    
+    return gaps;
   }
 
   private generateAssignmentId(): string {

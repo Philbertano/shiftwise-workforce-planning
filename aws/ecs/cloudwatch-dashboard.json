@@ -15,7 +15,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "us-east-1",
+        "region": "eu-central-1",
         "title": "ECS Service Metrics",
         "period": 300
       }
@@ -36,7 +36,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "us-east-1",
+        "region": "eu-central-1",
         "title": "Load Balancer Metrics",
         "period": 300
       }
@@ -57,7 +57,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "us-east-1",
+        "region": "eu-central-1",
         "title": "RDS Database Metrics",
         "period": 300
       }
@@ -78,7 +78,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "us-east-1",
+        "region": "eu-central-1",
         "title": "ElastiCache Redis Metrics",
         "period": 300
       }

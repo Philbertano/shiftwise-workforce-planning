@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-REGION=${AWS_REGION:-us-east-1}
+REGION=${AWS_REGION:-eu-central-1}
 CLUSTER_NAME=${CLUSTER_NAME:-shiftwise-cluster}
 SERVICE_NAME=${SERVICE_NAME:-shiftwise-service}
 DOMAIN_NAME=${DOMAIN_NAME:-}
@@ -77,13 +77,13 @@ build_and_push_images() {
     
     # Build and push API image
     echo_info "Building API image..."
-    docker build -t "${ECR_REPOSITORY}-api" -f ../../Dockerfile ../../
+    docker build --platform linux/amd64 -t "${ECR_REPOSITORY}-api" -f ../../Dockerfile.simple ../../
     docker tag "${ECR_REPOSITORY}-api:latest" "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}-api:latest"
     docker push "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}-api:latest"
     
     # Build and push Frontend image
     echo_info "Building Frontend image..."
-    docker build -t "${ECR_REPOSITORY}-frontend" -f ../../frontend/Dockerfile ../../frontend/
+    docker build --platform linux/amd64 -t "${ECR_REPOSITORY}-frontend" -f ../../frontend/Dockerfile.simple ../../frontend/
     docker tag "${ECR_REPOSITORY}-frontend:latest" "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}-frontend:latest"
     docker push "$(aws sts get-caller-identity --query Account --output text).dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}-frontend:latest"
     
@@ -96,7 +96,7 @@ deploy_infrastructure() {
     
     aws cloudformation deploy \
         --template-file cloudformation-ecs.yml \
-        --stack-name shiftwise-ecs \
+        --stack-name shiftwise-ecs-v7 \
         --parameter-overrides \
             ClusterName="$CLUSTER_NAME" \
             ServiceName="$SERVICE_NAME" \
@@ -128,9 +128,9 @@ get_service_info() {
     echo_info "Getting service information..."
     
     LOAD_BALANCER_DNS=$(aws cloudformation describe-stacks \
-        --stack-name shiftwise-ecs \
+        --stack-name shiftwise-ecs-v7 \
         --region "$REGION" \
-        --query 'Stacks[0].Outputs[?OutputKey==`LoadBalancerDNS`].OutputValue' \
+        --query 'Stacks[0].Outputs[?OutputKey==`ApplicationURL`].OutputValue' \
         --output text)
     
     echo_info "Load Balancer DNS: $LOAD_BALANCER_DNS"
@@ -169,10 +169,26 @@ main() {
     fi
 }
 
+# Deploy only infrastructure (skip image build)
+deploy_infrastructure_only() {
+    echo_info "Deploying infrastructure only (using existing ECR images)..."
+    
+    check_prerequisites
+    deploy_infrastructure
+    get_service_info
+    setup_monitoring
+    
+    echo_info "Infrastructure deployment completed!"
+    echo_info "Access your application at: http://$LOAD_BALANCER_DNS"
+}
+
 # Handle script arguments
 case "${1:-deploy}" in
     deploy)
         main
+        ;;
+    deploy-infra)
+        deploy_infrastructure_only
         ;;
     build)
         check_prerequisites
@@ -184,14 +200,21 @@ case "${1:-deploy}" in
         ;;
     destroy)
         echo_warn "Destroying infrastructure..."
-        aws cloudformation delete-stack --stack-name shiftwise-ecs --region "$REGION"
+        aws cloudformation delete-stack --stack-name shiftwise-ecs-v7 --region "$REGION"
         echo_info "Stack deletion initiated. This may take a few minutes."
         ;;
     status)
-        aws cloudformation describe-stacks --stack-name shiftwise-ecs --region "$REGION"
+        aws cloudformation describe-stacks --stack-name shiftwise-ecs-v7 --region "$REGION"
         ;;
     *)
-        echo "Usage: $0 {deploy|build|update|destroy|status}"
+        echo "Usage: $0 {deploy|deploy-infra|build|update|destroy|status}"
+        echo ""
+        echo "  deploy       - Complete deployment (build images + infrastructure)"
+        echo "  deploy-infra - Deploy infrastructure only (use existing ECR images)"
+        echo "  build        - Build and push Docker images only"
+        echo "  update       - Update ECS services with new images"
+        echo "  destroy      - Delete all infrastructure"
+        echo "  status       - Show CloudFormation stack status"
         exit 1
         ;;
 esac

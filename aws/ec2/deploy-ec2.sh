@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-REGION=${AWS_REGION:-us-east-1}
+REGION=${AWS_REGION:-eu-central-1}
 INSTANCE_TYPE=${INSTANCE_TYPE:-t3.medium}
 KEY_PAIR_NAME=${KEY_PAIR_NAME:-shiftwise-key}
 DOMAIN_NAME=${DOMAIN_NAME:-}

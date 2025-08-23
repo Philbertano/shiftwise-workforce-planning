@@ -9,14 +9,6 @@ COPY . .
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
-# Build stage
-FROM node:18-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
-COPY . .
-RUN npm run build
-
 # Production stage
 FROM node:18-alpine AS production
 WORKDIR /app
@@ -25,13 +17,14 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S shiftwise -u 1001
 
-# Install production dependencies
+# Install dependencies including dev dependencies for ts-node
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci && npm cache clean --force
 
-# Copy built application
-COPY --from=build --chown=shiftwise:nodejs /app/dist ./dist
-COPY --from=build --chown=shiftwise:nodejs /app/src/database ./src/database
+# Install ts-node globally
+RUN npm install -g ts-node typescript
+
+# Copy source code
 COPY --chown=shiftwise:nodejs . .
 
 # Create logs directory
@@ -46,4 +39,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 EXPOSE 3000
 
-CMD ["node", "dist/index.js"]
+CMD ["npx", "ts-node", "src/index.ts"]

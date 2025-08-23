@@ -14,7 +14,9 @@ import {
   ConstraintViolation,
   AuditLog,
   User,
-  DateRange
+  DateRange,
+  ShiftStaffingRequirement,
+  ShiftSkillRequirement
 } from '../types';
 
 // Planning Service Interface
@@ -227,6 +229,8 @@ export interface PlanningContext {
   employeeSkills: EmployeeSkill[];
   stations: Station[];
   shiftTemplates: ShiftTemplate[];
+  staffingRequirements?: ShiftStaffingRequirement[];
+  skillRequirements?: ShiftSkillRequirement[];
 }
 
 export interface SolutionResult {

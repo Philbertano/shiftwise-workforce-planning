@@ -199,3 +199,69 @@
     - Implement monitoring and logging for production readiness
     - Create deployment documentation and runbooks
     - _Requirements: 9.1, 7.1, 7.2, 7.3_
+
+## CRITICAL MISSING FEATURES - HIGH PRIORITY
+
+- [x] 15. Implement Navigation and Component Access
+  - [x] 15.1 Add React Router for multi-page navigation
+    - Install react-router-dom and configure routing in App.tsx
+    - Create navigation menu component with links to all modules
+    - Set up routes for Dashboard, Employees, Skills, Qualification Matrix, Planning
+    - Ensure all existing components are accessible via navigation
+    - _Requirements: 2.1, 8.1, 10.1_
+
+  - [x] 15.2 Make Qualification Matrix accessible
+    - Create dedicated page/route for Qualification Matrix component
+    - Connect QualificationMatrix component to real employee and skill data
+    - Add filtering and search capabilities to the matrix
+    - Ensure matrix displays current employee skills and levels
+    - _Requirements: 2.1, 2.3, 8.2_
+
+- [x] 16. Fix Employee Management CRUD Operations
+  - [x] 16.1 Implement Employee API endpoints
+    - Create GET /api/employees endpoint with pagination and search
+    - Implement POST /api/employees for adding new employees
+    - Add PUT /api/employees/:id for updating employee information
+    - Create DELETE /api/employees/:id for removing employees
+    - Include skill assignment endpoints for employees
+    - _Requirements: 2.1, 2.2, 8.1_
+
+  - [x] 16.2 Connect Employee Management frontend to backend
+    - Fix EmployeeList component to fetch data from API
+    - Connect EmployeeForm component to create/update API endpoints
+    - Add delete functionality with confirmation dialog
+    - Implement search and filtering in employee list
+    - Add skill assignment interface within employee management
+    - _Requirements: 2.1, 2.2, 8.1, 8.2_
+
+- [x] 17. Define Shift Assignment Criteria and Staffing Requirements
+  - [x] 17.1 Create Shift Staffing Configuration
+    - Design database schema for shift staffing requirements
+    - Create API endpoints for managing staffing requirements per shift/station
+    - Implement interface to define how many employees needed per shift
+    - Add minimum skill requirements configuration for each station
+    - Set up shift patterns and working hour constraints
+    - _Requirements: 1.2, 8.1, 8.2_
+
+  - [x] 17.2 Update Planning Algorithm with Staffing Criteria
+    - Modify PlanningService to use defined staffing requirements
+    - Update GreedyConstraintSolver to consider employee counts per shift
+    - Implement skill-based assignment logic using station requirements
+    - Add validation to ensure minimum staffing levels are met
+    - Include coverage gap detection when requirements aren't met
+    - _Requirements: 1.1, 1.2, 1.3, 3.1, 3.2_
+
+- [x] 18. Integration and Testing of Critical Features
+  - [x] 18.1 Test complete employee management workflow
+    - Verify employees can be added, edited, and deleted successfully
+    - Test skill assignment and qualification matrix updates
+    - Ensure employee data persists correctly in database
+    - Validate search and filtering functionality
+    - _Requirements: 2.1, 2.2_
+
+  - [x] 18.2 Test automatic shift assignment with criteria
+    - Configure sample shift requirements and test assignment generation
+    - Verify algorithm respects employee counts and skill requirements
+    - Test coverage gap detection and reporting
+    - Ensure assignments are valid and meet all constraints
+    - _Requirements: 1.1, 1.2, 1.3, 3.1_

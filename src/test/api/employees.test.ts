@@ -17,9 +17,9 @@ app.use('/api/employees', employeeRoutes);
 const createTestToken = (roles: UserRole[] = [UserRole.ADMIN]) => {
   const payload = {
     userId: 'test-user-id',
-    email: 'test@example.com',
-    name: 'Test User',
-    roles
+    username: 'testuser',
+    role: roles[0], // Use first role as primary role
+    active: true
   };
   return jwt.sign(payload, process.env.JWT_SECRET || 'test-secret');
 };

@@ -15,7 +15,7 @@ export interface AssistantMessage {
 }
 
 export interface OptimizationSuggestion {
-  type: 'swap' | 'overtime' | 'training' | 'hiring';
+  type: 'swap' | 'overtime' | 'training' | 'hiring' | 'optimize';
   description: string;
   impact: string;
   priority: 'low' | 'medium' | 'high' | 'critical';

@@ -21,6 +21,10 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({
   onSkillDelete
 }) => {
   const [expandedEmployee, setExpandedEmployee] = useState<string | null>(null)
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    employeeId: string;
+    employeeName: string;
+  } | null>(null)
 
   const getEmployeeSkills = (employeeId: string) => {
     return employeeSkills.filter(es => es.employeeId === employeeId)
@@ -66,6 +70,24 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({
       validUntil: existingSkill?.validUntil,
       certificationId: existingSkill?.certificationId
     })
+  }
+
+  const handleDeleteClick = (employee: Employee) => {
+    setDeleteConfirmation({
+      employeeId: employee.id,
+      employeeName: employee.name
+    })
+  }
+
+  const handleConfirmDelete = () => {
+    if (deleteConfirmation) {
+      onDelete(deleteConfirmation.employeeId)
+      setDeleteConfirmation(null)
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation(null)
   }
 
   return (
@@ -142,7 +164,7 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({
                         </button>
                         <button
                           className="delete-button"
-                          onClick={() => onDelete(employee.id)}
+                          onClick={() => handleDeleteClick(employee)}
                           title="Delete employee"
                         >
                           🗑️
@@ -228,6 +250,39 @@ export const EmployeeList: React.FC<EmployeeListProps> = ({
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation && (
+        <div className="modal-overlay">
+          <div className="confirmation-modal">
+            <div className="modal-header">
+              <h3>Confirm Delete</h3>
+            </div>
+            <div className="modal-content">
+              <p>
+                Are you sure you want to delete employee <strong>{deleteConfirmation.employeeName}</strong>?
+              </p>
+              <p className="warning-text">
+                This action cannot be undone. All associated skills and assignments will be removed.
+              </p>
+            </div>
+            <div className="modal-actions">
+              <button 
+                className="cancel-button" 
+                onClick={handleCancelDelete}
+              >
+                Cancel
+              </button>
+              <button 
+                className="delete-button confirm-delete" 
+                onClick={handleConfirmDelete}
+              >
+                Delete Employee
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

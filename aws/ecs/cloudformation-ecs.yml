@@ -208,7 +208,7 @@ Resources:
       DBInstanceIdentifier: shiftwise-db
       DBInstanceClass: db.t3.micro
       Engine: postgres
-      EngineVersion: '15.4'
+      EngineVersion: '15.7'
       MasterUsername: shiftwise
       MasterUserPassword: !Ref DatabasePassword
       AllocatedStorage: 20
@@ -237,7 +237,7 @@ Resources:
   CacheCluster:
     Type: AWS::ElastiCache::CacheCluster
     Properties:
-      CacheClusterId: shiftwise-cache
+      ClusterName: shiftwise-cache
       Engine: redis
       CacheNodeType: cache.t3.micro
       NumCacheNodes: 1
@@ -275,25 +275,27 @@ Resources:
       TargetType: ip
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
-      HealthCheckIntervalSeconds: 30
-      HealthCheckTimeoutSeconds: 5
+      HealthCheckIntervalSeconds: 60
+      HealthCheckTimeoutSeconds: 10
       HealthyThresholdCount: 2
-      UnhealthyThresholdCount: 3
+      UnhealthyThresholdCount: 5
 
   FrontendTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: ShiftWise-Frontend-TG
-      Port: 80
+      Port: 3000
       Protocol: HTTP
       VpcId: !Ref VPC
       TargetType: ip
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
-      HealthCheckIntervalSeconds: 30
-      HealthCheckTimeoutSeconds: 5
+      HealthCheckIntervalSeconds: 120
+      HealthCheckTimeoutSeconds: 30
       HealthyThresholdCount: 2
-      UnhealthyThresholdCount: 3
+      UnhealthyThresholdCount: 10
+      Matcher:
+        HttpCode: '200,404'
 
   # Load Balancer Listeners
   HTTPSListener:
@@ -313,14 +315,15 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-        - Type: !If [HasSSLCertificate, redirect, forward]
-          !If
-            - HasSSLCertificate
-            - RedirectConfig:
-                Protocol: HTTPS
-                Port: 443
-                StatusCode: HTTP_301
-            - TargetGroupArn: !Ref FrontendTargetGroup
+        - !If
+          - HasSSLCertificate
+          - Type: redirect
+            RedirectConfig:
+              Protocol: HTTPS
+              Port: 443
+              StatusCode: HTTP_301
+          - Type: forward
+            TargetGroupArn: !Ref FrontendTargetGroup
       LoadBalancerArn: !Ref ApplicationLoadBalancer
       Port: 80
       Protocol: HTTP
@@ -464,7 +467,7 @@ Resources:
         - Name: frontend
           Image: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository}-frontend:latest'
           PortMappings:
-            - ContainerPort: 80
+            - ContainerPort: 3000
               Protocol: tcp
           LogConfiguration:
             LogDriver: awslogs
@@ -484,6 +487,7 @@ Resources:
       TaskDefinition: !Ref APITaskDefinition
       DesiredCount: 2
       LaunchType: FARGATE
+      HealthCheckGracePeriodSeconds: 300
       NetworkConfiguration:
         AwsvpcConfiguration:
           SecurityGroups:
@@ -509,6 +513,7 @@ Resources:
       TaskDefinition: !Ref FrontendTaskDefinition
       DesiredCount: 2
       LaunchType: FARGATE
+      HealthCheckGracePeriodSeconds: 600
       NetworkConfiguration:
         AwsvpcConfiguration:
           SecurityGroups:
@@ -519,7 +524,7 @@ Resources:
           AssignPublicIp: ENABLED
       LoadBalancers:
         - ContainerName: frontend
-          ContainerPort: 80
+          ContainerPort: 3000
           TargetGroupArn: !Ref FrontendTargetGroup
       DeploymentConfiguration:
         MaximumPercent: 200

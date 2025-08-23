@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Employee, Skill, EmployeeSkill } from '../../types'
 import { EmployeeForm } from './EmployeeForm'
 import { EmployeeList } from './EmployeeList'
+import { employeeService } from '../../services/employeeService'
 import './EmployeeManagement.css'
 
 interface EmployeeManagementProps {
@@ -30,18 +31,58 @@ export const EmployeeManagement: React.FC<EmployeeManagementProps> = ({
   const [searchTerm, setSearchTerm] = useState('')
   const [filterTeam, setFilterTeam] = useState('')
   const [filterContractType, setFilterContractType] = useState('')
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>(employees)
+  const [isSearching, setIsSearching] = useState(false)
 
   // Get unique teams for filtering
   const teams = Array.from(new Set(employees.map(emp => emp.team))).sort()
 
-  // Filter employees based on search and filters
-  const filteredEmployees = employees.filter(employee => {
-    const matchesSearch = employee.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesTeam = !filterTeam || employee.team === filterTeam
-    const matchesContract = !filterContractType || employee.contractType === filterContractType
-    
-    return matchesSearch && matchesTeam && matchesContract
-  })
+  // Update filtered employees when filters change
+  useEffect(() => {
+    const applyFilters = async () => {
+      if (!searchTerm && !filterTeam && !filterContractType) {
+        // No filters applied, show all employees
+        setFilteredEmployees(employees)
+        return
+      }
+
+      setIsSearching(true)
+      try {
+        // Use API search if search term is provided
+        if (searchTerm) {
+          const searchResults = await employeeService.searchEmployees(searchTerm, {
+            team: filterTeam || undefined,
+            contractType: filterContractType || undefined,
+          })
+          setFilteredEmployees(searchResults)
+        } else {
+          // Apply local filters
+          const filtered = employees.filter(employee => {
+            const matchesTeam = !filterTeam || employee.team === filterTeam
+            const matchesContract = !filterContractType || employee.contractType === filterContractType
+            return matchesTeam && matchesContract
+          })
+          setFilteredEmployees(filtered)
+        }
+      } catch (error) {
+        console.error('Search failed:', error)
+        // Fallback to local filtering
+        const filtered = employees.filter(employee => {
+          const matchesSearch = employee.name.toLowerCase().includes(searchTerm.toLowerCase())
+          const matchesTeam = !filterTeam || employee.team === filterTeam
+          const matchesContract = !filterContractType || employee.contractType === filterContractType
+          return matchesSearch && matchesTeam && matchesContract
+        })
+        setFilteredEmployees(filtered)
+      } finally {
+        setIsSearching(false)
+      }
+    }
+
+    // Debounce search
+    const timeoutId = setTimeout(applyFilters, 300)
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm, filterTeam, filterContractType, employees])
 
   const handleCreateEmployee = () => {
     setSelectedEmployee(null)
@@ -89,13 +130,16 @@ export const EmployeeManagement: React.FC<EmployeeManagementProps> = ({
       <div className="management-filters">
         <div className="filter-group">
           <label htmlFor="employee-search">Search:</label>
-          <input
-            id="employee-search"
-            type="text"
-            placeholder="Search employees..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className="search-input-container">
+            <input
+              id="employee-search"
+              type="text"
+              placeholder="Search employees..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {isSearching && <span className="search-spinner">🔍</span>}
+          </div>
         </div>
 
         <div className="filter-group">

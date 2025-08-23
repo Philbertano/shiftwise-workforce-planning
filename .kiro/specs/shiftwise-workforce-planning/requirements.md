@@ -115,3 +115,38 @@ ShiftWise is an AI-assisted workforce planning system designed to automate shift
 2. WHEN committing plans THEN the system SHALL change assignment status from 'proposed' to 'confirmed'
 3. WHEN plans are committed THEN the system SHALL update coverage calculations and remove gaps
 4. IF last-minute changes occur THEN the system SHALL support quick re-planning with minimal disruption
+
+## CRITICAL MISSING FUNCTIONALITY REQUIREMENTS
+
+### Requirement 11
+
+**User Story:** As a user, I want to navigate between different modules of the application, so that I can access all functionality including employee management and qualification matrix.
+
+#### Acceptance Criteria
+
+1. WHEN accessing the application THEN the system SHALL provide a navigation menu with links to all modules
+2. WHEN clicking navigation links THEN the system SHALL route to the appropriate page/component
+3. WHEN viewing any page THEN the system SHALL show current location and allow navigation to other sections
+4. IF a component exists THEN it SHALL be accessible through the navigation system
+
+### Requirement 12
+
+**User Story:** As an HR manager, I want to add, edit, and delete employees, so that I can maintain an accurate workforce database.
+
+#### Acceptance Criteria
+
+1. WHEN adding a new employee THEN the system SHALL save employee information and make it available for scheduling
+2. WHEN editing employee information THEN the system SHALL update the database and reflect changes in all related components
+3. WHEN deleting an employee THEN the system SHALL remove them from the database and handle any existing assignments
+4. IF searching for employees THEN the system SHALL provide filtering and search capabilities
+
+### Requirement 13
+
+**User Story:** As a shift leader, I want to define staffing requirements for each shift and station, so that the automatic assignment algorithm can work effectively.
+
+#### Acceptance Criteria
+
+1. WHEN configuring a shift THEN the system SHALL allow setting minimum and maximum employee counts per station
+2. WHEN defining station requirements THEN the system SHALL support specifying required skills and minimum proficiency levels
+3. WHEN generating assignments THEN the system SHALL use these requirements to determine appropriate staffing
+4. IF requirements are not met THEN the system SHALL identify coverage gaps and suggest solutions

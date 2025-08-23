@@ -28,13 +28,17 @@ import {
   Priority,
   CoverageStatus,
   CoverageGap,
-  RiskLevel
+  RiskLevel,
+  ShiftStaffingRequirement,
+  ShiftSkillRequirement
 } from '../types/index.js';
 import { ConstraintManager } from '../constraints/ConstraintManager.js';
 import { ValidationContext } from '../constraints/base/ValidationContext.js';
 import { GreedyConstraintSolver } from './GreedyConstraintSolver.js';
 import { OptimizationService } from './OptimizationService.js';
 import { SimulationService } from './SimulationService.js';
+import { ShiftStaffingRequirementRepository } from '../repositories/shift-staffing-requirement.repository.js';
+import { ShiftSkillRequirementRepository } from '../repositories/shift-skill-requirement.repository.js';
 
 /**
  * Core planning service that orchestrates shift scheduling and optimization
@@ -44,12 +48,16 @@ export class PlanningService implements IPlanningService {
   private solver: IConstraintSolver;
   private optimizationService: OptimizationService;
   private simulationService: SimulationService;
+  private staffingRequirementRepo: ShiftStaffingRequirementRepository;
+  private skillRequirementRepo: ShiftSkillRequirementRepository;
 
   constructor(constraintManager: ConstraintManager) {
     this.constraintManager = constraintManager;
     this.solver = new GreedyConstraintSolver(constraintManager);
     this.optimizationService = new OptimizationService(constraintManager);
     this.simulationService = new SimulationService(this);
+    this.staffingRequirementRepo = new ShiftStaffingRequirementRepository();
+    this.skillRequirementRepo = new ShiftSkillRequirementRepository();
   }
 
   /**
@@ -205,10 +213,24 @@ export class PlanningService implements IPlanningService {
    * Build a scheduling problem from the request
    */
   private async buildSchedulingProblem(request: PlanGenerationRequest): Promise<SchedulingProblem> {
-    // TODO: Fetch data from repositories
-    // For now, return empty problem structure
+    // Get staffing requirements for the date range
+    const staffingRequirements = await this.getStaffingRequirementsForDateRange(request.dateRange);
+    
+    // Get skill requirements for the staffing requirements
+    const staffingRequirementIds = staffingRequirements.map(sr => sr.id);
+    const skillRequirementsMap = await this.skillRequirementRepo.findByStaffingRequirements(staffingRequirementIds);
+    
+    // Convert staffing requirements to shift demands
+    const demands = await this.convertStaffingRequirementsToDemands(
+      staffingRequirements,
+      skillRequirementsMap,
+      request
+    );
+
+    // TODO: Fetch other data from repositories
+    // For now, return structure with staffing requirements
     return {
-      demands: [],
+      demands,
       employees: [],
       constraints: this.constraintManager.getConstraints(),
       objectives: this.getDefaultObjectives(),
@@ -218,7 +240,9 @@ export class PlanningService implements IPlanningService {
         absences: [],
         employeeSkills: [],
         stations: [],
-        shiftTemplates: []
+        shiftTemplates: [],
+        staffingRequirements,
+        skillRequirements: Array.from(skillRequirementsMap.values()).flat()
       }
     };
   }
@@ -323,6 +347,121 @@ export class PlanningService implements IPlanningService {
         }
       }
     ];
+  }
+
+  /**
+   * Get staffing requirements for a date range
+   */
+  private async getStaffingRequirementsForDateRange(dateRange: DateRange): Promise<ShiftStaffingRequirement[]> {
+    const requirements: ShiftStaffingRequirement[] = [];
+    
+    // Get requirements for each date in the range
+    const currentDate = new Date(dateRange.start);
+    while (currentDate <= dateRange.end) {
+      const dailyRequirements = await this.staffingRequirementRepo.findActiveForDate(currentDate);
+      requirements.push(...dailyRequirements);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    // Remove duplicates based on station and shift template
+    const uniqueRequirements = requirements.filter((req, index, arr) => 
+      arr.findIndex(r => r.stationId === req.stationId && r.shiftTemplateId === req.shiftTemplateId) === index
+    );
+    
+    return uniqueRequirements;
+  }
+
+  /**
+   * Convert staffing requirements to shift demands
+   */
+  private async convertStaffingRequirementsToDemands(
+    staffingRequirements: ShiftStaffingRequirement[],
+    skillRequirementsMap: Map<string, ShiftSkillRequirement[]>,
+    request: PlanGenerationRequest
+  ): Promise<ShiftDemand[]> {
+    const demands: ShiftDemand[] = [];
+    
+    // Generate demands for each date in the range
+    const currentDate = new Date(request.dateRange.start);
+    while (currentDate <= request.dateRange.end) {
+      for (const staffingReq of staffingRequirements) {
+        // Check if this requirement is active for the current date
+        if (!staffingReq.isActiveForDate(currentDate)) {
+          continue;
+        }
+        
+        // Filter by station IDs if specified
+        if (request.stationIds && !request.stationIds.includes(staffingReq.stationId)) {
+          continue;
+        }
+        
+        // Filter by shift template IDs if specified
+        if (request.shiftTemplateIds && !request.shiftTemplateIds.includes(staffingReq.shiftTemplateId)) {
+          continue;
+        }
+        
+        // Create demand based on staffing requirement
+        const demand: ShiftDemand = {
+          id: `demand_${staffingReq.id}_${currentDate.toISOString().split('T')[0]}`,
+          date: new Date(currentDate),
+          stationId: staffingReq.stationId,
+          shiftTemplateId: staffingReq.shiftTemplateId,
+          requiredCount: staffingReq.optimalEmployees, // Use optimal as target
+          priority: staffingReq.priority,
+          notes: `Generated from staffing requirement: ${staffingReq.notes || 'Auto-generated'}`,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        demands.push(demand);
+      }
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return demands;
+  }
+
+  /**
+   * Validate staffing levels against requirements
+   */
+  private validateStaffingLevels(
+    assignments: Assignment[],
+    staffingRequirements: ShiftStaffingRequirement[],
+    demands: ShiftDemand[]
+  ): CoverageGap[] {
+    const gaps: CoverageGap[] = [];
+    
+    for (const demand of demands) {
+      const staffingReq = staffingRequirements.find(sr => 
+        sr.stationId === demand.stationId && 
+        sr.shiftTemplateId === demand.shiftTemplateId &&
+        sr.isActiveForDate(demand.date)
+      );
+      
+      if (!staffingReq) continue;
+      
+      const assignedCount = assignments.filter(a => a.demandId === demand.id).length;
+      const staffingStatus = staffingReq.getStaffingStatus(assignedCount);
+      
+      if (staffingStatus.status === 'understaffed') {
+        gaps.push({
+          demandId: demand.id,
+          stationName: 'Unknown Station', // TODO: Get from station data
+          shiftTime: 'Unknown Time', // TODO: Get from shift template
+          criticality: staffingReq.priority,
+          reason: staffingStatus.message,
+          suggestedActions: [
+            'Review skill requirements',
+            'Consider overtime assignments',
+            'Check employee availability',
+            'Hire temporary staff if needed'
+          ]
+        });
+      }
+    }
+    
+    return gaps;
   }
 
   /**

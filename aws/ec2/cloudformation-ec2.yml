@@ -164,7 +164,7 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-0c02fb55956c7d316  # Amazon Linux 2 AMI (update as needed)
+      ImageId: ami-0e7e134863fac4946  # Amazon Linux 2 AMI for eu-central-1
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPairName
       IamInstanceProfile: !Ref EC2InstanceProfile

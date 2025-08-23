@@ -24,8 +24,7 @@ const mockPlanReviewData: PlanReviewData = {
         score: 85,
         explanation: 'Good skill match',
         createdAt: new Date(),
-        createdBy: 'system',
-        updatedAt: new Date()
+        createdBy: 'system'
       },
       {
         id: 'assignment-2',
@@ -35,16 +34,17 @@ const mockPlanReviewData: PlanReviewData = {
         score: 70,
         explanation: 'Adequate skill match',
         createdAt: new Date(),
-        createdBy: 'system',
-        updatedAt: new Date()
+        createdBy: 'system'
       }
     ],
     coverageStatus: {
-      totalDemands: 2,
-      filledDemands: 2,
-      coveragePercentage: 100,
-      gaps: [],
-      riskLevel: 'low' as any
+      stationId: 'station-1',
+      shiftId: 'shift-1',
+      required: 2,
+      assigned: 2,
+      coverage: 100,
+      status: 'adequate' as any,
+      gaps: []
     },
     violations: [],
     dateRange: {

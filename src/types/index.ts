@@ -64,6 +64,59 @@ export interface RequiredSkill {
   mandatory: boolean;
 }
 
+export interface ShiftStaffingRequirement {
+  id: string;
+  stationId: string;
+  shiftTemplateId: string;
+  minEmployees: number;
+  maxEmployees: number;
+  optimalEmployees: number;
+  priority: Priority;
+  effectiveFrom: Date;
+  effectiveUntil?: Date;
+  active: boolean;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ShiftSkillRequirement {
+  id: string;
+  staffingRequirementId: string;
+  skillId: string;
+  minLevel: number;
+  requiredCount: number;
+  mandatory: boolean;
+  priority: Priority;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface WorkingHourConstraint {
+  id: string;
+  name: string;
+  description?: string;
+  maxConsecutiveDays: number;
+  minRestDays: number;
+  maxHoursPerWeek: number;
+  maxHoursPerDay: number;
+  minHoursBetweenShifts: number;
+  allowBackToBackShifts: boolean;
+  weekendWorkAllowed: boolean;
+  nightShiftRestrictions?: NightShiftRestrictions;
+  contractTypes: ContractType[];
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface NightShiftRestrictions {
+  maxConsecutiveNights?: number;
+  minRestAfterNights?: number;
+  maxNightsPerWeek?: number;
+  requireMedicalClearance?: boolean;
+}
+
 export interface ShiftDemand {
   id: string;
   date: Date;
@@ -103,8 +156,8 @@ export interface Absence {
 
 // Enums and supporting types
 export enum ContractType {
-  FULL_TIME = 'full_time',
-  PART_TIME = 'part_time',
+  FULL_TIME = 'full-time',
+  PART_TIME = 'part-time',
   TEMPORARY = 'temporary',
   CONTRACT = 'contract'
 }

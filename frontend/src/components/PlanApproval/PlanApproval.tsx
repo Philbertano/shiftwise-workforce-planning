@@ -41,7 +41,7 @@ export const PlanApproval: React.FC<PlanApprovalProps> = ({
       if (result.success) {
         setReviewData(result.data);
         // Initialize all assignments as selected by default
-        const allAssignmentIds = new Set(result.data.plan.assignments.map((a: Assignment) => a.id));
+        const allAssignmentIds = new Set<string>(result.data.plan.assignments.map((a: Assignment) => String(a.id)));
         setSelectedAssignments(allAssignmentIds);
       } else {
         setError(result.error?.message || 'Failed to load plan review data');
@@ -243,7 +243,7 @@ export const PlanApproval: React.FC<PlanApprovalProps> = ({
               </div>
               <div className="summary-item">
                 <span className="label">Coverage:</span>
-                <span className="value">{plan.coverageStatus.coveragePercentage.toFixed(1)}%</span>
+                <span className="value">{plan.coverageStatus.coverage.toFixed(1)}%</span>
               </div>
               <div className="summary-item">
                 <span className="label">Violations:</span>

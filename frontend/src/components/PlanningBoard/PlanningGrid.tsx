@@ -56,7 +56,7 @@ export const PlanningGrid: React.FC<PlanningGridProps> = ({
           {shifts.map((shift, shiftIndex) => (
             <div key={`${station.id}-${shift.id}`} className="grid-row">
               {shiftIndex === 0 && (
-                <div className="station-cell" rowSpan={shifts.length}>
+                <div className="station-cell" style={{ gridRowEnd: `span ${shifts.length}` }}>
                   <div className="station-name">{station.name}</div>
                   <div className="station-line">{station.line}</div>
                   <div className="station-skills">

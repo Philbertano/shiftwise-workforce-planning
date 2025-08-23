@@ -1,0 +1,31 @@
+# Simple Dockerfile without TypeScript compilation
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S shiftwise -u 1001
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev for ts-node)
+RUN npm ci --only=production=false
+
+# Copy source code (excluding node_modules)
+COPY . .
+
+# Rebuild native modules for the current platform after copying source
+RUN npm rebuild
+
+# Create logs directory
+RUN mkdir -p logs && chown -R shiftwise:nodejs /app
+
+# Switch to non-root user
+USER shiftwise
+
+EXPOSE 3000
+
+# Use ts-node to run TypeScript directly
+CMD ["npx", "ts-node", "--transpile-only", "src/index.ts"]

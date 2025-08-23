@@ -26,15 +26,21 @@ export class TestDataFactory {
       maxHoursPerDay: 8,
       minRestHours: 11,
       team: 'Test Team',
-      active: true
+      active: true,
+      preferences: JSON.stringify({
+        preferredShifts: ['day'],
+        preferredStations: [],
+        maxConsecutiveDays: 5,
+        preferredDaysOff: [0, 6]
+      })
     };
 
     const employee = { ...defaults, ...options.overrides };
 
     await DatabaseManager.query(`
-      INSERT INTO employees (id, name, contract_type, weekly_hours, max_hours_per_day, min_rest_hours, team, active) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [employee.id, employee.name, employee.contractType, employee.weeklyHours, employee.maxHoursPerDay, employee.minRestHours, employee.team, employee.active]);
+      INSERT INTO employees (id, name, contract_type, weekly_hours, max_hours_per_day, min_rest_hours, team, active, preferences) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [employee.id, employee.name, employee.contractType, employee.weeklyHours, employee.maxHoursPerDay, employee.minRestHours, employee.team, employee.active, employee.preferences]);
 
     return employee;
   }
