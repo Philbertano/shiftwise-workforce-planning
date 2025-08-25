@@ -10,39 +10,56 @@ const NavigationWithRouter = () => (
 )
 
 describe('Navigation', () => {
-  it('should render all navigation links', () => {
+  it('should render all navigation links with automotive terminology', () => {
     render(<NavigationWithRouter />)
     
-    // Check that all navigation items are present
-    expect(screen.getByText('Dashboard')).toBeInTheDocument()
-    expect(screen.getByText('Planning Board')).toBeInTheDocument()
-    expect(screen.getByText('Employees')).toBeInTheDocument()
-    expect(screen.getByText('Skills')).toBeInTheDocument()
-    expect(screen.getByText('Qualification Matrix')).toBeInTheDocument()
-    expect(screen.getByText('Coverage Dashboard')).toBeInTheDocument()
-    expect(screen.getByText('Plan Approval')).toBeInTheDocument()
-    expect(screen.getByText('Execution Monitoring')).toBeInTheDocument()
-    expect(screen.getByText('AI Assistant')).toBeInTheDocument()
+    // Check that all navigation items are present with automotive terminology
+    expect(screen.getByText('Manufacturing Dashboard')).toBeInTheDocument()
+    expect(screen.getByText('Shift Planning')).toBeInTheDocument()
+    expect(screen.getByText('Manufacturing Teams')).toBeInTheDocument()
+    expect(screen.getByText('Production Lines')).toBeInTheDocument()
+    expect(screen.getByText('Technical Skills')).toBeInTheDocument()
+    expect(screen.getByText('Safety Certifications')).toBeInTheDocument()
+    expect(screen.getByText('Line Coverage')).toBeInTheDocument()
+    expect(screen.getByText('Shift Approval')).toBeInTheDocument()
+    expect(screen.getByText('Production Monitor')).toBeInTheDocument()
+    expect(screen.getByText('Manufacturing AI')).toBeInTheDocument()
   })
 
-  it('should render ShiftWise title', () => {
+  it('should have automotive theme classes applied', () => {
     render(<NavigationWithRouter />)
     
-    expect(screen.getByText('ShiftWise')).toBeInTheDocument()
-    expect(screen.getByText('Workforce Planning')).toBeInTheDocument()
+    const navigation = document.querySelector('.navigation')
+    expect(navigation).toHaveClass('automotive-theme')
+    
+    const navHeader = document.querySelector('.nav-header')
+    expect(navHeader).toHaveClass('automotive')
   })
 
-  it('should have correct links', () => {
+  it('should have correct links with automotive icons', () => {
     render(<NavigationWithRouter />)
     
-    const dashboardLink = screen.getByRole('link', { name: /📊 Dashboard/i })
-    const planningLink = screen.getByRole('link', { name: /📅 Planning Board/i })
-    const employeesLink = screen.getByRole('link', { name: /👥 Employees/i })
-    const qualificationsLink = screen.getByRole('link', { name: /📋 Qualification Matrix/i })
+    const dashboardLink = screen.getByRole('link', { name: /⚙️ Manufacturing Dashboard/i })
+    const planningLink = screen.getByRole('link', { name: /📋 Shift Planning/i })
+    const employeesLink = screen.getByRole('link', { name: /👥 Manufacturing Teams/i })
+    const stationsLink = screen.getByRole('link', { name: /🏭 Production Lines/i })
     
     expect(dashboardLink).toHaveAttribute('href', '/')
     expect(planningLink).toHaveAttribute('href', '/planning')
     expect(employeesLink).toHaveAttribute('href', '/employees')
-    expect(qualificationsLink).toHaveAttribute('href', '/qualifications')
+    expect(stationsLink).toHaveAttribute('href', '/stations')
+  })
+
+  it('should apply correct data attributes for manufacturing context', () => {
+    render(<NavigationWithRouter />)
+    
+    const manufacturingLinks = document.querySelectorAll('[data-context="manufacturing"]')
+    expect(manufacturingLinks.length).toBeGreaterThan(0)
+    
+    const productionSections = document.querySelectorAll('[data-section="production"]')
+    expect(productionSections.length).toBeGreaterThan(0)
+    
+    const safetySections = document.querySelectorAll('[data-section="safety"]')
+    expect(safetySections.length).toBeGreaterThan(0)
   })
 })

@@ -13,7 +13,14 @@ describe('Station Model', () => {
       { skillId: 'skill-003', minLevel: 3, count: 1, mandatory: true }
     ],
     priority: Priority.HIGH,
-    location: 'Building 1, Floor 2'
+    location: 'Building 1, Floor 2',
+    // Automotive-specific fields
+    capacity: 5,
+    productionLineId: 'line-001',
+    equipment: [],
+    safetyRequirements: [],
+    description: 'Main assembly line for automotive production',
+    active: true
   };
 
   describe('Constructor and Validation', () => {
@@ -26,6 +33,13 @@ describe('Station Model', () => {
       expect(station.requiredSkills).toHaveLength(3);
       expect(station.priority).toBe(Priority.HIGH);
       expect(station.location).toBe('Building 1, Floor 2');
+      // Automotive-specific fields
+      expect(station.capacity).toBe(5);
+      expect(station.productionLineId).toBe('line-001');
+      expect(station.equipment).toEqual([]);
+      expect(station.safetyRequirements).toEqual([]);
+      expect(station.description).toBe('Main assembly line for automotive production');
+      expect(station.active).toBe(true);
       expect(station.createdAt).toBeInstanceOf(Date);
       expect(station.updatedAt).toBeInstanceOf(Date);
     });
@@ -127,6 +141,21 @@ describe('Station Model', () => {
         requiredSkills: [
           { skillId: 'skill-001', minLevel: 2, count: 1, mandatory: true },
           { skillId: 'skill-002', minLevel: 1, count: 1, mandatory: false }
+        ],
+        safetyRequirements: [
+          {
+            id: 'safety-001',
+            name: 'PPE Required',
+            description: 'Personal protective equipment required',
+            category: 'ppe',
+            level: 'basic',
+            certificationRequired: false,
+            trainingRequired: true,
+            equipmentRequired: ['helmet', 'gloves'],
+            active: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
         ]
       })).not.toThrow();
     });
@@ -210,7 +239,22 @@ describe('Station Model', () => {
     it('should identify critical stations', () => {
       const criticalStation = new Station({
         ...validStationData,
-        priority: Priority.CRITICAL
+        priority: Priority.CRITICAL,
+        safetyRequirements: [
+          {
+            id: 'safety-001',
+            name: 'PPE Required',
+            description: 'Personal protective equipment required',
+            category: 'ppe',
+            level: 'basic',
+            certificationRequired: false,
+            trainingRequired: true,
+            equipmentRequired: ['helmet', 'gloves'],
+            active: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        ]
       });
       
       expect(criticalStation.isCritical()).toBe(true);
@@ -225,7 +269,22 @@ describe('Station Model', () => {
       
       const criticalStation = new Station({
         ...validStationData,
-        priority: Priority.CRITICAL
+        priority: Priority.CRITICAL,
+        safetyRequirements: [
+          {
+            id: 'safety-001',
+            name: 'PPE Required',
+            description: 'Personal protective equipment required',
+            category: 'ppe',
+            level: 'basic',
+            certificationRequired: false,
+            trainingRequired: true,
+            equipmentRequired: ['helmet', 'gloves'],
+            active: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        ]
       });
       
       const mediumStation = new Station({
@@ -287,7 +346,22 @@ describe('Station Model', () => {
       await new Promise(resolve => setTimeout(resolve, 1));
       const updated = station.update({ 
         name: 'Assembly Line A2',
-        priority: Priority.CRITICAL
+        priority: Priority.CRITICAL,
+        safetyRequirements: [
+          {
+            id: 'safety-001',
+            name: 'PPE Required',
+            description: 'Personal protective equipment required',
+            category: 'ppe',
+            level: 'basic',
+            certificationRequired: false,
+            trainingRequired: true,
+            equipmentRequired: ['helmet', 'gloves'],
+            active: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+        ]
       });
       
       expect(updated.name).toBe('Assembly Line A2');

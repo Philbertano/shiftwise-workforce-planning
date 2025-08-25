@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Priority, RequiredSkill } from '../types/index.js';
+import { Priority, RequiredSkill, Equipment, SafetyRequirement } from '../types/index.js';
 
 // Validation schemas
 const RequiredSkillSchema = z.object({
@@ -9,6 +9,40 @@ const RequiredSkillSchema = z.object({
   mandatory: z.boolean()
 });
 
+const EquipmentSchema = z.object({
+  id: z.string().min(1, 'Equipment ID is required'),
+  name: z.string().min(1, 'Equipment name is required'),
+  type: z.string().min(1, 'Equipment type is required'),
+  model: z.string().optional(),
+  serialNumber: z.string().optional(),
+  manufacturer: z.string().optional(),
+  installDate: z.date().optional(),
+  lastMaintenance: z.date().optional(),
+  nextMaintenance: z.date().optional(),
+  status: z.string().min(1, 'Equipment status is required'),
+  requiredSkills: z.array(z.string()),
+  safetyRequirements: z.array(z.string()),
+  operatingParameters: z.record(z.any()).optional(),
+  active: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+});
+
+const SafetyRequirementSchema = z.object({
+  id: z.string().min(1, 'Safety requirement ID is required'),
+  name: z.string().min(1, 'Safety requirement name is required'),
+  description: z.string().min(1, 'Description is required'),
+  category: z.string().min(1, 'Category is required'),
+  level: z.string().min(1, 'Level is required'),
+  certificationRequired: z.boolean(),
+  certificationValidityDays: z.number().optional(),
+  trainingRequired: z.boolean(),
+  equipmentRequired: z.array(z.string()),
+  active: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date()
+});
+
 const StationSchema = z.object({
   id: z.string().min(1, 'Station ID is required'),
   name: z.string().min(1, 'Station name is required').max(100, 'Name too long'),
@@ -16,6 +50,13 @@ const StationSchema = z.object({
   requiredSkills: z.array(RequiredSkillSchema),
   priority: z.nativeEnum(Priority),
   location: z.string().max(200, 'Location too long').optional(),
+  // Automotive-specific fields
+  capacity: z.number().min(1, 'Capacity must be at least 1'),
+  productionLineId: z.string().optional(),
+  equipment: z.array(EquipmentSchema),
+  safetyRequirements: z.array(SafetyRequirementSchema),
+  description: z.string().max(500, 'Description too long').optional(),
+  active: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date()
 });
@@ -27,6 +68,13 @@ export class Station {
   public readonly requiredSkills: RequiredSkill[];
   public readonly priority: Priority;
   public readonly location?: string;
+  // Automotive-specific fields
+  public readonly capacity: number;
+  public readonly productionLineId?: string;
+  public readonly equipment: Equipment[];
+  public readonly safetyRequirements: SafetyRequirement[];
+  public readonly description?: string;
+  public readonly active: boolean;
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
 
@@ -37,6 +85,13 @@ export class Station {
     requiredSkills: RequiredSkill[];
     priority: Priority;
     location?: string;
+    // Automotive-specific fields
+    capacity: number;
+    productionLineId?: string;
+    equipment: Equipment[];
+    safetyRequirements: SafetyRequirement[];
+    description?: string;
+    active: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   }) {
@@ -60,6 +115,13 @@ export class Station {
     this.requiredSkills = validated.requiredSkills;
     this.priority = validated.priority;
     this.location = validated.location;
+    // Automotive-specific fields
+    this.capacity = validated.capacity;
+    this.productionLineId = validated.productionLineId;
+    this.equipment = validated.equipment;
+    this.safetyRequirements = validated.safetyRequirements;
+    this.description = validated.description;
+    this.active = validated.active;
     this.createdAt = validated.createdAt;
     this.updatedAt = validated.updatedAt;
   }
@@ -89,6 +151,40 @@ export class Station {
     const totalRequiredCount = data.requiredSkills.reduce((total, skill) => total + skill.count, 0);
     if (totalRequiredCount > 10) {
       throw new Error('Total required skill count cannot exceed 10 per station');
+    }
+
+    // Automotive-specific validations
+    // Validate capacity is reasonable (1-50 employees per station)
+    if (data.capacity < 1 || data.capacity > 50) {
+      throw new Error('Station capacity must be between 1 and 50 employees');
+    }
+
+    // Validate no duplicate equipment
+    const equipmentIds = data.equipment.map(eq => eq.id);
+    const uniqueEquipmentIds = new Set(equipmentIds);
+    if (equipmentIds.length !== uniqueEquipmentIds.size) {
+      throw new Error('Station cannot have duplicate equipment');
+    }
+
+    // Validate no duplicate safety requirements
+    const safetyReqIds = data.safetyRequirements.map(sr => sr.id);
+    const uniqueSafetyReqIds = new Set(safetyReqIds);
+    if (safetyReqIds.length !== uniqueSafetyReqIds.size) {
+      throw new Error('Station cannot have duplicate safety requirements');
+    }
+
+    // Validate reasonable limits
+    if (data.equipment.length > 20) {
+      throw new Error('Station cannot have more than 20 pieces of equipment');
+    }
+
+    if (data.safetyRequirements.length > 15) {
+      throw new Error('Station cannot have more than 15 safety requirements');
+    }
+
+    // Validate that critical stations have safety requirements
+    if (data.priority === Priority.CRITICAL && data.safetyRequirements.length === 0) {
+      throw new Error('Critical stations must have at least one safety requirement');
     }
   }
 
@@ -176,6 +272,124 @@ export class Station {
   }
 
   /**
+   * Get operational equipment (active and operational status)
+   */
+  public getOperationalEquipment(): Equipment[] {
+    return this.equipment.filter(eq => eq.active && eq.status === 'operational');
+  }
+
+  /**
+   * Get equipment by type
+   */
+  public getEquipmentByType(type: string): Equipment[] {
+    return this.equipment.filter(eq => eq.type === type);
+  }
+
+  /**
+   * Get active safety requirements
+   */
+  public getActiveSafetyRequirements(): SafetyRequirement[] {
+    return this.safetyRequirements.filter(sr => sr.active);
+  }
+
+  /**
+   * Get safety requirements by category
+   */
+  public getSafetyRequirementsByCategory(category: string): SafetyRequirement[] {
+    return this.safetyRequirements.filter(sr => sr.category === category);
+  }
+
+  /**
+   * Get high-risk safety requirements (advanced or expert level)
+   */
+  public getHighRiskSafetyRequirements(): SafetyRequirement[] {
+    return this.safetyRequirements.filter(sr => sr.level === 'advanced' || sr.level === 'expert');
+  }
+
+  /**
+   * Check if station is at capacity
+   */
+  public isAtCapacity(currentAssignments: number): boolean {
+    return currentAssignments >= this.capacity;
+  }
+
+  /**
+   * Check if station is understaffed
+   */
+  public isUnderstaffed(currentAssignments: number): boolean {
+    const minimumStaffing = Math.ceil(this.capacity * 0.8); // 80% of capacity
+    return currentAssignments < minimumStaffing;
+  }
+
+  /**
+   * Check if station is overstaffed
+   */
+  public isOverstaffed(currentAssignments: number): boolean {
+    return currentAssignments > this.capacity;
+  }
+
+  /**
+   * Get staffing status
+   */
+  public getStaffingStatus(currentAssignments: number): 'understaffed' | 'optimal' | 'overstaffed' {
+    if (this.isUnderstaffed(currentAssignments)) return 'understaffed';
+    if (this.isOverstaffed(currentAssignments)) return 'overstaffed';
+    return 'optimal';
+  }
+
+  /**
+   * Get available capacity
+   */
+  public getAvailableCapacity(currentAssignments: number): number {
+    return Math.max(0, this.capacity - currentAssignments);
+  }
+
+  /**
+   * Check if station has specific equipment
+   */
+  public hasEquipment(equipmentId: string): boolean {
+    return this.equipment.some(eq => eq.id === equipmentId);
+  }
+
+  /**
+   * Check if station has specific safety requirement
+   */
+  public hasSafetyRequirement(safetyReqId: string): boolean {
+    return this.safetyRequirements.some(sr => sr.id === safetyReqId);
+  }
+
+  /**
+   * Get all skills required by equipment
+   */
+  public getEquipmentRequiredSkills(): string[] {
+    const skills = new Set<string>();
+    this.equipment.forEach(eq => {
+      eq.requiredSkills.forEach(skill => skills.add(skill));
+    });
+    return Array.from(skills);
+  }
+
+  /**
+   * Get all safety requirements from equipment
+   */
+  public getEquipmentSafetyRequirements(): string[] {
+    const safetyReqs = new Set<string>();
+    this.equipment.forEach(eq => {
+      eq.safetyRequirements.forEach(req => safetyReqs.add(req));
+    });
+    return Array.from(safetyReqs);
+  }
+
+  /**
+   * Check if station is automotive production ready
+   */
+  public isProductionReady(): boolean {
+    return this.active && 
+           this.getOperationalEquipment().length > 0 && 
+           this.getActiveSafetyRequirements().length > 0;
+  }
+
+  /**
    * Create a copy with updated properties
    */
   public update(updates: Partial<Omit<Station, 'id' | 'createdAt'>>): Station {
@@ -186,6 +400,13 @@ export class Station {
       requiredSkills: updates.requiredSkills ?? this.requiredSkills,
       priority: updates.priority ?? this.priority,
       location: updates.location ?? this.location,
+      // Automotive-specific fields
+      capacity: updates.capacity ?? this.capacity,
+      productionLineId: updates.productionLineId ?? this.productionLineId,
+      equipment: updates.equipment ?? this.equipment,
+      safetyRequirements: updates.safetyRequirements ?? this.safetyRequirements,
+      description: updates.description ?? this.description,
+      active: updates.active ?? this.active,
       createdAt: this.createdAt,
       updatedAt: new Date()
     });
@@ -200,15 +421,8 @@ export class Station {
       throw new Error(`Skill ${skill.skillId} is already required for this station`);
     }
 
-    return new Station({
-      id: this.id,
-      name: this.name,
-      line: this.line,
-      requiredSkills: [...this.requiredSkills, skill],
-      priority: this.priority,
-      location: this.location,
-      createdAt: this.createdAt,
-      updatedAt: new Date()
+    return this.update({
+      requiredSkills: [...this.requiredSkills, skill]
     });
   }
 
@@ -222,15 +436,64 @@ export class Station {
       throw new Error(`Skill ${skillId} is not required for this station`);
     }
 
-    return new Station({
-      id: this.id,
-      name: this.name,
-      line: this.line,
-      requiredSkills: updatedSkills,
-      priority: this.priority,
-      location: this.location,
-      createdAt: this.createdAt,
-      updatedAt: new Date()
+    return this.update({
+      requiredSkills: updatedSkills
+    });
+  }
+
+  /**
+   * Add equipment to this station
+   */
+  public addEquipment(equipment: Equipment): Station {
+    if (this.hasEquipment(equipment.id)) {
+      throw new Error(`Equipment ${equipment.id} already exists at this station`);
+    }
+
+    return this.update({
+      equipment: [...this.equipment, equipment]
+    });
+  }
+
+  /**
+   * Remove equipment from this station
+   */
+  public removeEquipment(equipmentId: string): Station {
+    const updatedEquipment = this.equipment.filter(eq => eq.id !== equipmentId);
+    
+    if (updatedEquipment.length === this.equipment.length) {
+      throw new Error(`Equipment ${equipmentId} not found at this station`);
+    }
+
+    return this.update({
+      equipment: updatedEquipment
+    });
+  }
+
+  /**
+   * Add safety requirement to this station
+   */
+  public addSafetyRequirement(safetyReq: SafetyRequirement): Station {
+    if (this.hasSafetyRequirement(safetyReq.id)) {
+      throw new Error(`Safety requirement ${safetyReq.id} already exists for this station`);
+    }
+
+    return this.update({
+      safetyRequirements: [...this.safetyRequirements, safetyReq]
+    });
+  }
+
+  /**
+   * Remove safety requirement from this station
+   */
+  public removeSafetyRequirement(safetyReqId: string): Station {
+    const updatedSafetyReqs = this.safetyRequirements.filter(sr => sr.id !== safetyReqId);
+    
+    if (updatedSafetyReqs.length === this.safetyRequirements.length) {
+      throw new Error(`Safety requirement ${safetyReqId} not found for this station`);
+    }
+
+    return this.update({
+      safetyRequirements: updatedSafetyReqs
     });
   }
 
@@ -245,6 +508,13 @@ export class Station {
       requiredSkills: this.requiredSkills,
       priority: this.priority,
       location: this.location,
+      // Automotive-specific fields
+      capacity: this.capacity,
+      productionLineId: this.productionLineId,
+      equipment: this.equipment,
+      safetyRequirements: this.safetyRequirements,
+      description: this.description,
+      active: this.active,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     };

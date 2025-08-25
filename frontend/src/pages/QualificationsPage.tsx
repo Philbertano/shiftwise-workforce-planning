@@ -154,8 +154,8 @@ export const QualificationsPage: React.FC = () => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Qualification Matrix</h1>
-        <p>View and manage employee qualifications and skill levels</p>
+        <h1>Manufacturing Qualification Matrix</h1>
+        <p>View and manage production worker qualifications and skill certifications</p>
       </div>
       <div className="page-content">
         <QualificationMatrix 

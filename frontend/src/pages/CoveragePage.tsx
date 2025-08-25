@@ -90,8 +90,8 @@ export const CoveragePage: React.FC = () => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Coverage Dashboard</h1>
-        <p>Monitor workforce coverage, gaps, and risk indicators</p>
+        <h1>Production Line Coverage</h1>
+        <p>Monitor manufacturing workforce coverage, staffing gaps, and production risk indicators</p>
       </div>
       <div className="page-content">
         <CoverageDashboard 

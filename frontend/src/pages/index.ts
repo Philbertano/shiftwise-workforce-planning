@@ -1,6 +1,7 @@
 export { Dashboard } from './Dashboard'
 export { PlanningPage } from './PlanningPage'
 export { EmployeesPage } from './EmployeesPage'
+export { StationsPage } from './StationsPage'
 export { SkillsPage } from './SkillsPage'
 export { QualificationsPage } from './QualificationsPage'
 export { CoveragePage } from './CoveragePage'

@@ -1,0 +1,25 @@
+/* Fade Transition Styles */
+.fade-transition {
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+}
+
+.fade-transition--visible {
+  opacity: 1;
+}
+
+.fade-transition--hidden {
+  opacity: 0;
+}
+
+/* Smooth transitions for automotive components */
+.fade-transition--automotive {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .fade-transition {
+    transition-duration: 0ms !important;
+  }
+}

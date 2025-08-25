@@ -4,14 +4,17 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
 import { DatabaseManager } from './database/config';
 import { apiRoutes } from './api/routes/index';
 import { runMigrations } from './database/migrate';
+import { initializePlanningWebSocket } from './api/routes/planning-websocket';
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
+const server = createServer(app);
 const PORT = process.env.PORT || 3000;
 
 // Security middleware
@@ -101,11 +104,17 @@ async function startServer() {
     await dbManager.connect();
     console.log('Database connected successfully');
     
+    // Initialize WebSocket server
+    console.log('Initializing WebSocket server...');
+    const wsManager = initializePlanningWebSocket(server);
+    console.log('WebSocket server initialized');
+    
     // Start HTTP server
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`ShiftWise API server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`Database: ${dbManager.getConfig().type}`);
+      console.log(`WebSocket server available at ws://localhost:${PORT}/api/planning/ws`);
     });
     
   } catch (error) {

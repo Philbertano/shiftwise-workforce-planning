@@ -46,8 +46,8 @@ export const SkillsPage: React.FC = () => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Skill Management</h1>
-        <p>Manage skills, categories, and proficiency levels</p>
+        <h1>Manufacturing Skills Management</h1>
+        <p>Manage production skills, certifications, and proficiency levels</p>
       </div>
       <div className="page-content">
         <SkillManagement 

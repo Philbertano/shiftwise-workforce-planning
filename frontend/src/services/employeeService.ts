@@ -81,7 +81,8 @@ class EmployeeService {
     const endpoint = `/employees${queryString ? `?${queryString}` : ''}`;
     
     const response = await apiClient.get<{
-      employees: Employee[];
+      success: boolean;
+      data: Employee[];
       pagination: {
         page: number;
         limit: number;
@@ -91,21 +92,24 @@ class EmployeeService {
     }>(endpoint);
 
     return {
-      data: response.employees,
+      data: response.data,
       pagination: response.pagination,
     };
   }
 
   async getEmployee(id: string): Promise<Employee> {
-    return apiClient.get<Employee>(`/employees/${id}`);
+    const response = await apiClient.get<{ success: boolean; data: Employee }>(`/employees/${id}`);
+    return response.data;
   }
 
   async createEmployee(data: CreateEmployeeData): Promise<Employee> {
-    return apiClient.post<Employee>('/employees', data);
+    const response = await apiClient.post<{ success: boolean; data: Employee }>('/employees', data);
+    return response.data;
   }
 
   async updateEmployee(id: string, data: UpdateEmployeeData): Promise<Employee> {
-    return apiClient.put<Employee>(`/employees/${id}`, data);
+    const response = await apiClient.put<{ success: boolean; data: Employee }>(`/employees/${id}`, data);
+    return response.data;
   }
 
   async deleteEmployee(id: string): Promise<{ success: boolean; message: string }> {

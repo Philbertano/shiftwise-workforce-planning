@@ -20,7 +20,7 @@ const executionStatusRepository = new ExecutionStatusRepository();
 const planRepository = new PlanRepository();
 const assignmentRepository = new AssignmentRepository();
 const dbManager = DatabaseManager.getInstance();
-const auditRepository = new SqliteAuditRepository(dbManager.getDatabase());
+const auditRepository = new SqliteAuditRepository(dbManager);
 const auditService = new AuditService(auditRepository);
 const executionMonitoringService = new ExecutionMonitoringService(
   executionStatusRepository,

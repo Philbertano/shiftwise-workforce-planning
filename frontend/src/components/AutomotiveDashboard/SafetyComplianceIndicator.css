@@ -1,0 +1,461 @@
+.safety-compliance-indicator {
+  padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--automotive-border);
+}
+
+.section-header h3 {
+  margin: 0;
+  color: var(--automotive-text);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.safety-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.compliance-overview {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.overall-score {
+  display: flex;
+  justify-content: center;
+}
+
+.circular-progress {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circular-progress-svg {
+  transform: rotate(-90deg);
+}
+
+.circular-progress-bar {
+  transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.circular-progress-content {
+  position: absolute;
+  text-align: center;
+}
+
+.progress-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--automotive-text);
+  line-height: 1;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  color: var(--automotive-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+.incident-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.incident-card {
+  background: var(--automotive-background);
+  border: 1px solid var(--automotive-border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.incident-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.incident-icon {
+  font-size: 1.25rem;
+}
+
+.incident-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--automotive-text);
+}
+
+.incident-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.incident-label {
+  font-size: 0.75rem;
+  color: var(--automotive-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.incident-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.last-incident {
+  background: var(--automotive-background);
+  border: 1px solid var(--automotive-border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.last-incident-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--automotive-text);
+}
+
+.last-incident-date {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--automotive-text);
+  margin-bottom: 0.25rem;
+}
+
+.last-incident-full-date {
+  font-size: 0.75rem;
+  color: var(--automotive-text-secondary);
+}
+
+.no-incidents {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid var(--automotive-success);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--automotive-success);
+  font-weight: 600;
+}
+
+.no-incidents-icon {
+  font-size: 1.25rem;
+}
+
+.compliance-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.compliance-details h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--automotive-text);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.metric-card {
+  background: var(--automotive-background);
+  border: 1px solid var(--automotive-border);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metric-icon {
+  font-size: 1.25rem;
+}
+
+.metric-header h5 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--automotive-text);
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.metric-progress {
+  position: relative;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--automotive-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.metric-description {
+  font-size: 0.75rem;
+  color: var(--automotive-text-secondary);
+  line-height: 1.3;
+}
+
+.metric-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.safety-actions {
+  background: var(--automotive-background);
+  border: 1px solid var(--automotive-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.safety-actions h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--automotive-text);
+}
+
+.actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--automotive-surface);
+  border: 1px solid var(--automotive-border);
+  border-radius: 6px;
+}
+
+.action-item--positive {
+  background: rgba(34, 197, 94, 0.05);
+  border-color: var(--automotive-success);
+}
+
+.action-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.action-text {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--automotive-text);
+}
+
+.action-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--automotive-primary);
+  border-radius: 4px;
+  background: var(--automotive-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.action-btn:hover {
+  background: var(--automotive-primary-dark);
+  transform: translateY(-1px);
+}
+
+.action-btn--success {
+  background: var(--automotive-success);
+  border-color: var(--automotive-success);
+}
+
+.action-btn--success:hover {
+  background: var(--automotive-success-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .compliance-overview {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  
+  .incident-summary {
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .incident-card,
+  .last-incident,
+  .no-incidents {
+    flex: 1;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .safety-compliance-indicator {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .incident-summary {
+    flex-direction: column;
+  }
+  
+  .incident-card,
+  .last-incident,
+  .no-incidents {
+    max-width: none;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .action-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+}
+
+/* Animation for circular progress */
+.circular-progress-bar {
+  animation: drawCircle 2s ease-in-out;
+}
+
+@keyframes drawCircle {
+  from {
+    stroke-dashoffset: 377; /* Full circumference for radius 60 */
+  }
+}
+
+/* Animation for metric cards */
+.metric-card {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.metric-card:nth-child(1) { animation-delay: 0.1s; }
+.metric-card:nth-child(2) { animation-delay: 0.2s; }
+.metric-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse animation for critical status */
+.status-dot {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}

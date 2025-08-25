@@ -1,0 +1,147 @@
+.persistence-status {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+.status-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  padding: 4px 0;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-indicator.online .status-dot {
+  background-color: #22c55e;
+}
+
+.status-indicator.offline .status-dot {
+  background-color: #ef4444;
+}
+
+.status-dot.success {
+  background-color: #22c55e;
+}
+
+.status-dot.warning {
+  background-color: #f59e0b;
+}
+
+.status-dot.error {
+  background-color: #ef4444;
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.force-save-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.force-save-btn:hover {
+  background: #2563eb;
+}
+
+.conflicts-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.conflicts-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.conflict-item {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.conflict-message {
+  font-size: 13px;
+  color: #dc2626;
+  margin-bottom: 8px;
+}
+
+.conflict-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.conflict-actions .btn {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.conflict-actions .btn:hover {
+  background: #f9fafb;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .persistence-status {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 16px;
+    width: calc(100% - 32px);
+  }
+}
+
+/* Hide on small screens when not critical */
+@media (max-width: 480px) {
+  .persistence-status .status-indicator.saved,
+  .persistence-status .status-indicator.online {
+    display: none;
+  }
+}

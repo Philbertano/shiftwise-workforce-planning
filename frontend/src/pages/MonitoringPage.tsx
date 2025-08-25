@@ -10,8 +10,8 @@ export const MonitoringPage: React.FC = () => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Execution Monitoring</h1>
-        <p>Monitor shift execution and real-time status updates</p>
+        <h1>Production Execution Monitoring</h1>
+        <p>Monitor manufacturing shift execution and real-time production status</p>
       </div>
       <div className="page-content">
         <ExecutionMonitoring 

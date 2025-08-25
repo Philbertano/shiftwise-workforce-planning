@@ -1,0 +1,211 @@
+/* Automotive Theme CSS Custom Properties */
+:root {
+  /* Colors */
+  --automotive-color-primary: #1e3a8a;
+  --automotive-color-secondary: #64748b;
+  --automotive-color-accent: #ea580c;
+  --automotive-color-background: #f8fafc;
+  --automotive-color-surface: #ffffff;
+  --automotive-color-text: #1e293b;
+  --automotive-color-text-secondary: #64748b;
+  --automotive-color-success: #059669;
+  --automotive-color-warning: #d97706;
+  --automotive-color-error: #dc2626;
+  --automotive-color-border: #e2e8f0;
+  --automotive-color-hover: #f1f5f9;
+
+  /* Typography */
+  --automotive-font-family: "Inter", "Segoe UI", "Roboto", sans-serif;
+  
+  /* Heading Sizes */
+  --automotive-font-size-h1: 2.25rem;
+  --automotive-font-size-h2: 1.875rem;
+  --automotive-font-size-h3: 1.5rem;
+  --automotive-font-size-h4: 1.25rem;
+  --automotive-font-size-h5: 1.125rem;
+  --automotive-font-size-h6: 1rem;
+  
+  /* Body Sizes */
+  --automotive-font-size-large: 1.125rem;
+  --automotive-font-size-medium: 1rem;
+  --automotive-font-size-small: 0.875rem;
+  --automotive-font-size-xsmall: 0.75rem;
+  
+  /* Font Weights */
+  --automotive-font-weight-light: 300;
+  --automotive-font-weight-normal: 400;
+  --automotive-font-weight-medium: 500;
+  --automotive-font-weight-semibold: 600;
+  --automotive-font-weight-bold: 700;
+
+  /* Spacing */
+  --automotive-spacing-xs: 0.25rem;
+  --automotive-spacing-sm: 0.5rem;
+  --automotive-spacing-md: 1rem;
+  --automotive-spacing-lg: 1.5rem;
+  --automotive-spacing-xl: 2rem;
+  --automotive-spacing-xxl: 3rem;
+
+  /* Border Radius */
+  --automotive-border-radius-small: 0.25rem;
+  --automotive-border-radius-medium: 0.5rem;
+  --automotive-border-radius-large: 0.75rem;
+
+  /* Shadows */
+  --automotive-shadow-small: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --automotive-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --automotive-shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Base automotive styling */
+.automotive-theme {
+  font-family: var(--automotive-font-family);
+  color: var(--automotive-color-text);
+  background-color: var(--automotive-color-background);
+}
+
+/* Automotive button styles */
+.automotive-button {
+  font-family: var(--automotive-font-family);
+  font-weight: var(--automotive-font-weight-medium);
+  border-radius: var(--automotive-border-radius-medium);
+  padding: var(--automotive-spacing-sm) var(--automotive-spacing-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.automotive-button--primary {
+  background-color: var(--automotive-color-primary);
+  color: white;
+}
+
+.automotive-button--primary:hover {
+  background-color: #1e40af;
+  box-shadow: var(--automotive-shadow-medium);
+}
+
+.automotive-button--secondary {
+  background-color: var(--automotive-color-secondary);
+  color: white;
+}
+
+.automotive-button--secondary:hover {
+  background-color: #475569;
+  box-shadow: var(--automotive-shadow-medium);
+}
+
+.automotive-button--accent {
+  background-color: var(--automotive-color-accent);
+  color: white;
+}
+
+.automotive-button--accent:hover {
+  background-color: #c2410c;
+  box-shadow: var(--automotive-shadow-medium);
+}
+
+/* Automotive card styles */
+.automotive-card {
+  background-color: var(--automotive-color-surface);
+  border: 1px solid var(--automotive-color-border);
+  border-radius: var(--automotive-border-radius-medium);
+  box-shadow: var(--automotive-shadow-small);
+  padding: var(--automotive-spacing-lg);
+}
+
+.automotive-card:hover {
+  box-shadow: var(--automotive-shadow-medium);
+}
+
+/* Automotive input styles */
+.automotive-input {
+  font-family: var(--automotive-font-family);
+  font-size: var(--automotive-font-size-medium);
+  padding: var(--automotive-spacing-sm) var(--automotive-spacing-md);
+  border: 1px solid var(--automotive-color-border);
+  border-radius: var(--automotive-border-radius-medium);
+  background-color: var(--automotive-color-surface);
+  color: var(--automotive-color-text);
+  transition: border-color 0.2s ease-in-out;
+}
+
+.automotive-input:focus {
+  outline: none;
+  border-color: var(--automotive-color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+/* Automotive heading styles */
+.automotive-heading {
+  font-family: var(--automotive-font-family);
+  color: var(--automotive-color-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.automotive-heading--h1 {
+  font-size: var(--automotive-font-size-h1);
+  font-weight: var(--automotive-font-weight-bold);
+}
+
+.automotive-heading--h2 {
+  font-size: var(--automotive-font-size-h2);
+  font-weight: var(--automotive-font-weight-semibold);
+}
+
+.automotive-heading--h3 {
+  font-size: var(--automotive-font-size-h3);
+  font-weight: var(--automotive-font-weight-semibold);
+}
+
+.automotive-heading--h4 {
+  font-size: var(--automotive-font-size-h4);
+  font-weight: var(--automotive-font-weight-medium);
+}
+
+/* Automotive text styles */
+.automotive-text {
+  font-family: var(--automotive-font-family);
+  color: var(--automotive-color-text);
+  line-height: 1.5;
+}
+
+.automotive-text--large {
+  font-size: var(--automotive-font-size-large);
+}
+
+.automotive-text--medium {
+  font-size: var(--automotive-font-size-medium);
+}
+
+.automotive-text--small {
+  font-size: var(--automotive-font-size-small);
+}
+
+.automotive-text--secondary {
+  color: var(--automotive-color-text-secondary);
+}
+
+/* Status indicators */
+.automotive-status {
+  padding: var(--automotive-spacing-xs) var(--automotive-spacing-sm);
+  border-radius: var(--automotive-border-radius-small);
+  font-size: var(--automotive-font-size-small);
+  font-weight: var(--automotive-font-weight-medium);
+}
+
+.automotive-status--success {
+  background-color: rgba(5, 150, 105, 0.1);
+  color: var(--automotive-color-success);
+}
+
+.automotive-status--warning {
+  background-color: rgba(217, 119, 6, 0.1);
+  color: var(--automotive-color-warning);
+}
+
+.automotive-status--error {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: var(--automotive-color-error);
+}

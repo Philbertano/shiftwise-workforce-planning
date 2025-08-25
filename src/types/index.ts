@@ -53,8 +53,73 @@ export interface Station {
   requiredSkills: RequiredSkill[];
   priority: Priority;
   location?: string;
+  // Automotive-specific fields
+  capacity: number;
+  productionLineId?: string;
+  equipment: Equipment[];
+  safetyRequirements: SafetyRequirement[];
+  description?: string;
+  active: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ProductionLine {
+  id: string;
+  name: string;
+  type: ProductionLineType;
+  description?: string;
+  taktTime: number; // seconds
+  capacity: number; // units per hour
+  qualityCheckpoints: QualityCheckpoint[];
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Equipment {
+  id: string;
+  name: string;
+  type: EquipmentType;
+  model?: string;
+  serialNumber?: string;
+  manufacturer?: string;
+  installDate?: Date;
+  lastMaintenance?: Date;
+  nextMaintenance?: Date;
+  status: EquipmentStatus;
+  requiredSkills: string[]; // skill IDs
+  safetyRequirements: string[]; // safety requirement IDs
+  operatingParameters?: Record<string, any>;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SafetyRequirement {
+  id: string;
+  name: string;
+  description: string;
+  category: SafetyCategory;
+  level: SafetyLevel;
+  certificationRequired: boolean;
+  certificationValidityDays?: number;
+  trainingRequired: boolean;
+  equipmentRequired: string[]; // PPE or safety equipment
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface QualityCheckpoint {
+  id: string;
+  name: string;
+  description: string;
+  type: QualityCheckType;
+  frequency: number; // units between checks
+  requiredSkills: string[]; // skill IDs
+  tolerances: Record<string, any>;
+  active: boolean;
 }
 
 export interface RequiredSkill {
@@ -167,7 +232,16 @@ export enum SkillCategory {
   SAFETY = 'safety',
   QUALITY = 'quality',
   LEADERSHIP = 'leadership',
-  OPERATIONAL = 'operational'
+  OPERATIONAL = 'operational',
+  // Automotive-specific skill categories
+  ASSEMBLY = 'assembly',
+  WELDING = 'welding',
+  PAINTING = 'painting',
+  INSPECTION = 'inspection',
+  MACHINERY = 'machinery',
+  ELECTRICAL = 'electrical',
+  HYDRAULICS = 'hydraulics',
+  PNEUMATICS = 'pneumatics'
 }
 
 export enum ShiftType {
@@ -195,6 +269,71 @@ export enum AbsenceType {
   SICK = 'sick',
   TRAINING = 'training',
   PERSONAL = 'personal'
+}
+
+// Automotive-specific enums
+export enum ProductionLineType {
+  ASSEMBLY = 'assembly',
+  PAINT = 'paint',
+  BODY_SHOP = 'body_shop',
+  FINAL_INSPECTION = 'final_inspection',
+  STAMPING = 'stamping',
+  WELDING = 'welding',
+  TRIM = 'trim',
+  CHASSIS = 'chassis'
+}
+
+export enum EquipmentType {
+  ROBOT = 'robot',
+  CONVEYOR = 'conveyor',
+  PRESS = 'press',
+  WELDER = 'welder',
+  PAINT_BOOTH = 'paint_booth',
+  INSPECTION_STATION = 'inspection_station',
+  ASSEMBLY_FIXTURE = 'assembly_fixture',
+  CRANE = 'crane',
+  LIFT = 'lift',
+  TOOL = 'tool',
+  MEASUREMENT_DEVICE = 'measurement_device',
+  SAFETY_SYSTEM = 'safety_system'
+}
+
+export enum EquipmentStatus {
+  OPERATIONAL = 'operational',
+  MAINTENANCE = 'maintenance',
+  BREAKDOWN = 'breakdown',
+  OFFLINE = 'offline',
+  TESTING = 'testing'
+}
+
+export enum SafetyCategory {
+  PPE = 'ppe', // Personal Protective Equipment
+  LOCKOUT_TAGOUT = 'lockout_tagout',
+  CONFINED_SPACE = 'confined_space',
+  HAZMAT = 'hazmat',
+  ELECTRICAL = 'electrical',
+  MECHANICAL = 'mechanical',
+  ERGONOMIC = 'ergonomic',
+  FIRE_SAFETY = 'fire_safety',
+  EMERGENCY_RESPONSE = 'emergency_response'
+}
+
+export enum SafetyLevel {
+  BASIC = 'basic',
+  INTERMEDIATE = 'intermediate',
+  ADVANCED = 'advanced',
+  EXPERT = 'expert'
+}
+
+export enum QualityCheckType {
+  VISUAL = 'visual',
+  DIMENSIONAL = 'dimensional',
+  FUNCTIONAL = 'functional',
+  ELECTRICAL = 'electrical',
+  PRESSURE = 'pressure',
+  TORQUE = 'torque',
+  LEAK = 'leak',
+  ALIGNMENT = 'alignment'
 }
 
 export interface EmployeePreferences {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { format } from 'date-fns'
 import { Station, ShiftTemplate, Assignment, Employee, CoverageStatus, ConstraintViolation } from '../../types'
-import { PlanningCell } from './PlanningCell'
+import { MultiAssignmentSlot } from './MultiAssignmentSlot'
 
 interface PlanningGridProps {
   stations: Station[]
@@ -26,8 +26,8 @@ export const PlanningGrid: React.FC<PlanningGridProps> = ({
   getCoverageForSlot,
   getViolationsForSlot
 }) => {
-  const getAssignmentForSlot = (stationId: string, shiftId: string, date: Date) => {
-    return assignments.find(a => 
+  const getAssignmentsForSlot = (stationId: string, shiftId: string, date: Date) => {
+    return assignments.filter(a => 
       a.demandId === `${stationId}-${shiftId}-${format(date, 'yyyy-MM-dd')}`
     )
   }
@@ -77,19 +77,19 @@ export const PlanningGrid: React.FC<PlanningGridProps> = ({
               </div>
 
               {weekDates.map(date => {
-                const assignment = getAssignmentForSlot(station.id, shift.id, date)
-                const employee = assignment ? getEmployeeById(assignment.employeeId) : undefined
+                const slotAssignments = getAssignmentsForSlot(station.id, shift.id, date)
                 const coverage = getCoverageForSlot(station.id, shift.id, date)
                 const violations = getViolationsForSlot(station.id, shift.id, date)
 
                 return (
-                  <PlanningCell
+                  <MultiAssignmentSlot
                     key={`${station.id}-${shift.id}-${date.toISOString()}`}
                     stationId={station.id}
                     shiftId={shift.id}
                     date={date}
-                    assignment={assignment}
-                    employee={employee}
+                    assignments={slotAssignments}
+                    employees={employees}
+                    capacity={station.capacity || 1}
                     coverage={coverage}
                     violations={violations}
                     onAssignmentDrop={onAssignmentDrop}

@@ -39,9 +39,51 @@ export interface Station {
   id: string
   name: string
   line: string
+  description?: string
+  capacity?: number
+  active?: boolean
   requiredSkills: RequiredSkill[]
   priority: Priority
   location?: string
+  // Automotive-specific fields
+  productionLineId?: string
+  equipment?: Equipment[]
+  safetyRequirements?: SafetyRequirement[]
+}
+
+export interface ProductionLine {
+  id: string
+  name: string
+  type: 'assembly' | 'paint' | 'body_shop' | 'final_inspection' | 'stamping' | 'welding' | 'trim' | 'chassis'
+  description?: string
+  taktTime: number // seconds
+  capacity: number // units per hour
+  active: boolean
+}
+
+export interface Equipment {
+  id: string
+  name: string
+  type: 'robot' | 'conveyor' | 'press' | 'welder' | 'paint_booth' | 'inspection_station' | 'assembly_fixture' | 'crane' | 'lift' | 'tool' | 'measurement_device' | 'safety_system'
+  model?: string
+  manufacturer?: string
+  status: 'operational' | 'maintenance' | 'breakdown' | 'offline' | 'testing'
+  requiredSkills: string[]
+  safetyRequirements: string[]
+  active: boolean
+}
+
+export interface SafetyRequirement {
+  id: string
+  name: string
+  description: string
+  category: 'ppe' | 'lockout_tagout' | 'confined_space' | 'hazmat' | 'electrical' | 'mechanical' | 'ergonomic' | 'fire_safety' | 'emergency_response'
+  level: 'basic' | 'intermediate' | 'advanced' | 'expert'
+  certificationRequired: boolean
+  certificationValidityDays?: number
+  trainingRequired: boolean
+  equipmentRequired: string[]
+  active: boolean
 }
 
 export interface RequiredSkill {
@@ -129,7 +171,8 @@ export interface EmployeePreferences {
 
 export interface BreakRule {
   duration: number
-  startTime: string
+  startTime?: string
+  startAfter?: number
   paid: boolean
 }
 

@@ -1,7 +1,11 @@
 .layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: var(--automotive-color-background);
+}
+
+.automotive-layout {
+  font-family: var(--automotive-font-family);
 }
 
 .main-content {
@@ -11,37 +15,48 @@
   overflow-x: auto;
 }
 
+.automotive-main-content {
+  background-color: var(--automotive-color-background);
+}
+
 .page {
-  padding: 2rem;
+  padding: var(--automotive-spacing-xl);
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: var(--automotive-spacing-xl);
+  padding-bottom: var(--automotive-spacing-lg);
+  border-bottom: 2px solid var(--automotive-color-primary);
+  background: linear-gradient(135deg, var(--automotive-color-surface) 0%, var(--automotive-color-hover) 100%);
+  padding: var(--automotive-spacing-lg);
+  border-radius: var(--automotive-border-radius-medium);
+  box-shadow: var(--automotive-shadow-small);
 }
 
 .page-header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin: 0 0 0.5rem 0;
+  font-size: var(--automotive-font-size-h1);
+  font-weight: var(--automotive-font-weight-bold);
+  color: var(--automotive-color-primary);
+  margin: 0 0 var(--automotive-spacing-sm) 0;
+  font-family: var(--automotive-font-family);
 }
 
 .page-header p {
-  font-size: 1.1rem;
-  color: #64748b;
+  font-size: var(--automotive-font-size-large);
+  color: var(--automotive-color-text-secondary);
   margin: 0;
+  font-family: var(--automotive-font-family);
 }
 
 .page-content {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 1.5rem;
+  background: var(--automotive-color-surface);
+  border-radius: var(--automotive-border-radius-medium);
+  box-shadow: var(--automotive-shadow-medium);
+  padding: var(--automotive-spacing-xl);
   min-height: 600px;
+  border: 1px solid var(--automotive-color-border);
 }
 
 /* Responsive design */
@@ -62,4 +77,131 @@
   .page-content {
     padding: 1rem;
   }
+}
+/
+* Automotive theme application for all page elements */
+.automotive-theme .page {
+  color: var(--automotive-color-text);
+}
+
+.automotive-theme .page h1,
+.automotive-theme .page h2,
+.automotive-theme .page h3,
+.automotive-theme .page h4,
+.automotive-theme .page h5,
+.automotive-theme .page h6 {
+  color: var(--automotive-color-primary);
+  font-family: var(--automotive-font-family);
+}
+
+.automotive-theme .page p,
+.automotive-theme .page span,
+.automotive-theme .page div {
+  font-family: var(--automotive-font-family);
+}
+
+/* Apply automotive styling to buttons throughout the app */
+.automotive-theme button {
+  font-family: var(--automotive-font-family);
+  border-radius: var(--automotive-border-radius-medium);
+  transition: all 0.2s ease-in-out;
+}
+
+.automotive-theme button:not([class*="automotive-button"]) {
+  background-color: var(--automotive-color-primary);
+  color: white;
+  border: none;
+  padding: var(--automotive-spacing-sm) var(--automotive-spacing-md);
+  font-weight: var(--automotive-font-weight-medium);
+}
+
+.automotive-theme button:not([class*="automotive-button"]):hover {
+  background-color: #1e40af;
+  box-shadow: var(--automotive-shadow-medium);
+}
+
+/* Apply automotive styling to inputs throughout the app */
+.automotive-theme input,
+.automotive-theme select,
+.automotive-theme textarea {
+  font-family: var(--automotive-font-family);
+  border: 1px solid var(--automotive-color-border);
+  border-radius: var(--automotive-border-radius-medium);
+  padding: var(--automotive-spacing-sm) var(--automotive-spacing-md);
+  background-color: var(--automotive-color-surface);
+  color: var(--automotive-color-text);
+  transition: border-color 0.2s ease-in-out;
+}
+
+.automotive-theme input:focus,
+.automotive-theme select:focus,
+.automotive-theme textarea:focus {
+  outline: none;
+  border-color: var(--automotive-color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+/* Apply automotive styling to tables */
+.automotive-theme table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--automotive-font-family);
+}
+
+.automotive-theme th,
+.automotive-theme td {
+  border: 1px solid var(--automotive-color-border);
+  padding: var(--automotive-spacing-sm) var(--automotive-spacing-md);
+  text-align: left;
+}
+
+.automotive-theme th {
+  background-color: var(--automotive-color-primary);
+  color: white;
+  font-weight: var(--automotive-font-weight-semibold);
+}
+
+.automotive-theme tr:nth-child(even) {
+  background-color: var(--automotive-color-hover);
+}
+
+/* Apply automotive styling to cards and panels */
+.automotive-theme .card,
+.automotive-theme .panel {
+  background-color: var(--automotive-color-surface);
+  border: 1px solid var(--automotive-color-border);
+  border-radius: var(--automotive-border-radius-medium);
+  box-shadow: var(--automotive-shadow-small);
+  padding: var(--automotive-spacing-lg);
+}
+
+.automotive-theme .card:hover,
+.automotive-theme .panel:hover {
+  box-shadow: var(--automotive-shadow-medium);
+}
+
+/* Loading and error states */
+.automotive-theme .loading-spinner {
+  color: var(--automotive-color-primary);
+  font-family: var(--automotive-font-family);
+  text-align: center;
+  padding: var(--automotive-spacing-xl);
+}
+
+.automotive-theme .error-message {
+  background-color: rgba(220, 38, 38, 0.1);
+  border: 1px solid var(--automotive-color-error);
+  border-radius: var(--automotive-border-radius-medium);
+  padding: var(--automotive-spacing-lg);
+  color: var(--automotive-color-error);
+  font-family: var(--automotive-font-family);
+}
+
+.automotive-theme .error-message button {
+  background-color: var(--automotive-color-error);
+  margin-top: var(--automotive-spacing-md);
+}
+
+.automotive-theme .error-message button:hover {
+  background-color: #b91c1c;
 }

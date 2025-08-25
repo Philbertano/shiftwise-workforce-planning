@@ -33,8 +33,7 @@ COPY --from=build /app/dist .
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Create non-root user
-RUN addgroup -g 1001 -S nginx && \
-    adduser -S shiftwise -u 1001 -G nginx
+RUN adduser -S shiftwise -u 1001 -G nginx
 
 # Set ownership
 RUN chown -R shiftwise:nginx /usr/share/nginx/html && \

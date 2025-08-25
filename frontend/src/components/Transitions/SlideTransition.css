@@ -1,0 +1,45 @@
+/* Slide Transition Styles */
+.slide-transition {
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.slide-transition--visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.slide-transition--hidden {
+  opacity: 0;
+}
+
+/* Direction-specific styles */
+.slide-transition--up.slide-transition--hidden {
+  transform: translate3d(0, 20px, 0);
+}
+
+.slide-transition--down.slide-transition--hidden {
+  transform: translate3d(0, -20px, 0);
+}
+
+.slide-transition--left.slide-transition--hidden {
+  transform: translate3d(20px, 0, 0);
+}
+
+.slide-transition--right.slide-transition--hidden {
+  transform: translate3d(-20px, 0, 0);
+}
+
+/* Automotive-specific easing */
+.slide-transition--automotive {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .slide-transition {
+    transition-duration: 0ms !important;
+    transform: none !important;
+  }
+}

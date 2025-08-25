@@ -60,7 +60,7 @@ router.get('/', requireRole([UserRole.ADMIN, UserRole.HR_PLANNER, UserRole.SHIFT
 
     // Get total count
     const countSql = `SELECT COUNT(*) as total FROM employees ${whereClause}`;
-    const countResult = await employeeRepo.executeQuery(countSql, queryParams);
+    const countResult = await (employeeRepo as any).executeQuery(countSql, queryParams);
     const total = countResult[0]?.total || 0;
 
     // Get employees with pagination
@@ -70,7 +70,7 @@ router.get('/', requireRole([UserRole.ADMIN, UserRole.HR_PLANNER, UserRole.SHIFT
       ORDER BY name ASC 
       LIMIT ? OFFSET ?
     `;
-    const employees = await employeeRepo.findByQuery(sql, [...queryParams, limitNum, offset]);
+    const employees = await (employeeRepo as any).findByQuery(sql, [...queryParams, limitNum, offset]);
 
     res.json({
       success: true,
@@ -354,7 +354,7 @@ router.delete('/:id', requireRole([UserRole.ADMIN]), async (req, res) => {
       AND a.status IN ('proposed', 'confirmed') 
       AND sd.date >= CURRENT_DATE
     `;
-    const assignmentResult = await employeeRepo.executeQuery(activeAssignmentsSql, [req.params.id]);
+    const assignmentResult = await (employeeRepo as any).executeQuery(activeAssignmentsSql, [req.params.id]);
     const activeAssignments = assignmentResult[0]?.count || 0;
 
     if (activeAssignments > 0) {

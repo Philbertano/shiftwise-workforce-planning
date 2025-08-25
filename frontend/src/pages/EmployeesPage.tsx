@@ -160,8 +160,8 @@ export const EmployeesPage: React.FC = () => {
     return (
       <div className="page">
         <div className="page-header">
-          <h1>Employee Management</h1>
-          <p>Loading employee data...</p>
+          <h1>Manufacturing Team Management</h1>
+          <p>Loading production worker data...</p>
         </div>
         <div className="page-content">
           <div className="loading-spinner">Loading...</div>
@@ -174,8 +174,8 @@ export const EmployeesPage: React.FC = () => {
     return (
       <div className="page">
         <div className="page-header">
-          <h1>Employee Management</h1>
-          <p>Error loading employee data</p>
+          <h1>Manufacturing Team Management</h1>
+          <p>Error loading production worker data</p>
         </div>
         <div className="page-content">
           <div className="error-message">
@@ -190,8 +190,8 @@ export const EmployeesPage: React.FC = () => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Employee Management</h1>
-        <p>Manage employee information, contracts, and availability</p>
+        <h1>Manufacturing Team Management</h1>
+        <p>Manage production worker information, contracts, and shift availability</p>
       </div>
       <div className="page-content">
         <EmployeeManagement 

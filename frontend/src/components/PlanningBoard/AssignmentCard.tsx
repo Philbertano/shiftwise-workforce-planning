@@ -7,21 +7,23 @@ interface AssignmentCardProps {
   employee: Employee
   violations: ConstraintViolation[]
   onDelete: () => void
+  compact?: boolean
 }
 
 export const AssignmentCard: React.FC<AssignmentCardProps> = ({
   assignment,
   employee,
   violations,
-  onDelete
+  onDelete,
+  compact = false
 }) => {
   const [showTooltip, setShowTooltip] = useState(false)
 
   const [{ isDragging }, drag] = useDrag({
-    type: 'assignment',
+    type: 'employee',
     item: {
-      type: 'assignment',
-      id: assignment.id,
+      type: 'employee',
+      id: assignment.employeeId,
       employeeId: assignment.employeeId,
       assignmentId: assignment.id
     },
@@ -47,7 +49,8 @@ export const AssignmentCard: React.FC<AssignmentCardProps> = ({
     getStatusClass(),
     hasErrors ? 'has-errors' : '',
     hasViolations ? 'has-violations' : '',
-    isDragging ? 'dragging' : ''
+    isDragging ? 'dragging' : '',
+    compact ? 'compact' : ''
   ].filter(Boolean).join(' ')
 
   return (

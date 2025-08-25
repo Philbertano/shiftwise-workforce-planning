@@ -17,8 +17,8 @@ export const ApprovalPage: React.FC = () => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Plan Approval</h1>
-        <p>Review and approve shift planning proposals</p>
+        <h1>Production Plan Approval</h1>
+        <p>Review and approve manufacturing shift planning proposals</p>
       </div>
       <div className="page-content">
         <PlanApproval 

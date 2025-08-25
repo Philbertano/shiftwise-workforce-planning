@@ -1,15 +1,16 @@
 .navigation {
   width: 250px;
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--automotive-color-primary, #1e3a8a) 0%, var(--automotive-color-secondary, #64748b) 100%);
   color: white;
   padding: 0;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
   position: fixed;
   left: 0;
   top: 0;
   z-index: 1000;
   overflow-y: auto;
+  font-family: var(--automotive-font-family, "Inter", "Segoe UI", "Roboto", sans-serif);
 }
 
 .nav-header {
@@ -54,13 +55,14 @@
 
 .nav-link:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-left-color: rgba(255, 255, 255, 0.5);
+  border-left-color: var(--automotive-color-accent, #ea580c);
+  transform: translateX(2px);
 }
 
 .nav-link.active {
   background: rgba(255, 255, 255, 0.15);
-  border-left-color: white;
-  font-weight: 600;
+  border-left-color: var(--automotive-color-accent, #ea580c);
+  font-weight: var(--automotive-font-weight-semibold, 600);
 }
 
 .nav-icon {
@@ -68,10 +70,13 @@
   margin-right: 0.75rem;
   width: 1.5rem;
   text-align: center;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .nav-label {
-  font-size: 0.95rem;
+  font-size: var(--automotive-font-size-small, 0.875rem);
+  font-weight: var(--automotive-font-weight-medium, 500);
+  letter-spacing: 0.025em;
 }
 
 /* Responsive design */
@@ -115,4 +120,59 @@
   .nav-label {
     font-size: 0.8rem;
   }
+}
+/*
+ Automotive-specific navigation enhancements */
+.navigation.automotive-theme {
+  border-right: 3px solid var(--automotive-color-accent, #ea580c);
+}
+
+.nav-header.automotive {
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid var(--automotive-color-accent, #ea580c);
+}
+
+/* Manufacturing context indicators */
+.nav-link[data-context="manufacturing"] {
+  position: relative;
+}
+
+.nav-link[data-context="manufacturing"]::after {
+  content: '';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--automotive-color-accent, #ea580c);
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+/* Enhanced hover effects for automotive theme */
+.nav-link:hover .nav-icon {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.nav-link.active .nav-icon {
+  color: var(--automotive-color-accent, #ea580c);
+  filter: drop-shadow(0 0 4px rgba(234, 88, 12, 0.3));
+}
+
+/* Production line status indicators */
+.nav-item[data-section="production"] .nav-link {
+  border-left-width: 4px;
+}
+
+.nav-item[data-section="production"] .nav-link:hover,
+.nav-item[data-section="production"] .nav-link.active {
+  border-left-color: var(--automotive-color-success, #059669);
+}
+
+/* Safety and compliance indicators */
+.nav-item[data-section="safety"] .nav-link:hover,
+.nav-item[data-section="safety"] .nav-link.active {
+  border-left-color: var(--automotive-color-warning, #d97706);
 }

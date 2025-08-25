@@ -10,8 +10,10 @@ import { planApprovalRoutes } from './plan-approval-mock';
 import { aiRoutes } from './ai';
 import { systemRoutes } from './system';
 import { auditRoutes } from './audit';
+import { assistantRoutes } from './assistant';
 import { createShiftStaffingRequirementsRouter } from './shift-staffing-requirements';
 import { createWorkingHourConstraintsRouter } from './working-hour-constraints';
+import planningSyncRoutes from './planning-sync';
 
 const router = Router();
 
@@ -25,10 +27,12 @@ router.use('/coverage', coverageRoutes);
 router.use('/execution', executionMonitoringRoutes);
 router.use('/plan-approval', planApprovalRoutes);
 router.use('/ai', aiRoutes);
+router.use('/assistant', assistantRoutes);
 router.use('/system', systemRoutes);
 router.use('/audit', auditRoutes);
 router.use('/shift-staffing-requirements', createShiftStaffingRequirementsRouter());
 router.use('/working-hour-constraints', createWorkingHourConstraintsRouter());
+router.use('/planning', planningSyncRoutes);
 
 // Health check endpoint
 router.get('/health', async (req, res) => {

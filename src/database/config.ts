@@ -153,7 +153,6 @@ export class DatabaseManager {
       max: this.config.pool?.max || 10,
       idleTimeoutMillis: this.config.pool?.idleTimeoutMillis || 30000,
       connectionTimeoutMillis: this.config.pool?.connectionTimeoutMillis || 5000,
-      acquireTimeoutMillis: this.config.pool?.acquireTimeoutMillis || 10000,
       statement_timeout: 30000,
       query_timeout: 30000
     });

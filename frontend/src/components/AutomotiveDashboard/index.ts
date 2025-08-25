@@ -1,0 +1,7 @@
+export { AutomotiveDashboard } from './AutomotiveDashboard'
+export { AutomotiveKPICards } from './AutomotiveKPICards'
+export { ProductionLineStatus } from './ProductionLineStatus'
+export { StaffingLevelMonitor } from './StaffingLevelMonitor'
+export { ProductionEfficiencyChart } from './ProductionEfficiencyChart'
+export { SkillCoverageMatrix } from './SkillCoverageMatrix'
+export { SafetyComplianceIndicator } from './SafetyComplianceIndicator'

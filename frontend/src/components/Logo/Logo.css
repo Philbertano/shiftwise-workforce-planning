@@ -1,0 +1,142 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--primary-color, #2563eb);
+}
+
+.logo--light {
+  color: #ffffff;
+}
+
+.logo--dark {
+  color: #1e293b;
+}
+
+.logo--automotive {
+  color: var(--automotive-color-primary, #1e40af); /* Industrial blue */
+}
+
+.logo__icon {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.logo__svg {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.2s ease;
+}
+
+.logo--small .logo__svg {
+  width: 32px;
+  height: 32px;
+}
+
+.logo--large .logo__svg {
+  width: 56px;
+  height: 56px;
+}
+
+/* Gear animations */
+.logo:hover .logo__gear-main {
+  animation: rotate-clockwise 3s linear infinite;
+}
+
+.logo:hover .logo__gear-secondary {
+  animation: rotate-counter-clockwise 2s linear infinite;
+}
+
+@keyframes rotate-clockwise {
+  from {
+    transform-origin: 32px 32px;
+    transform: rotate(0deg);
+  }
+  to {
+    transform-origin: 32px 32px;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate-counter-clockwise {
+  from {
+    transform-origin: 48px 16px;
+    transform: rotate(0deg);
+  }
+  to {
+    transform-origin: 48px 16px;
+    transform: rotate(-360deg);
+  }
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.logo__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, currentColor 0%, rgba(255,255,255,0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo--small .logo__title {
+  font-size: 1.25rem;
+}
+
+.logo--large .logo__title {
+  font-size: 1.75rem;
+}
+
+.logo__subtitle {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.logo--small .logo__subtitle {
+  font-size: 0.625rem;
+}
+
+.logo--large .logo__subtitle {
+  font-size: 0.875rem;
+}
+
+/* Automotive theme styling */
+.logo--automotive .logo__title {
+  background: linear-gradient(135deg, var(--automotive-color-primary, #1e40af) 0%, var(--automotive-color-accent, #ea580c) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo--automotive .logo__subtitle {
+  color: var(--automotive-color-secondary, #64748b);
+}
+
+/* Icon-only variant */
+.logo--icon-only {
+  gap: 0;
+}
+
+.logo--icon-only .logo__text {
+  display: none;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+  .logo__text {
+    display: none;
+  }
+  
+  .logo {
+    gap: 0;
+  }
+}

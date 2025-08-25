@@ -1,0 +1,254 @@
+.assignment-validation-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.assignment-validation-dialog {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  font-family: var(--automotive-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--automotive-color-border, #dee2e6);
+  background-color: var(--automotive-color-surface, #f8f9fa);
+}
+
+.dialog-header h3 {
+  margin: 0;
+  color: var(--automotive-color-text-dark, #212529);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--automotive-color-text-secondary, #6c757d);
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background-color: var(--automotive-color-error-light, #f8d7da);
+  color: var(--automotive-color-error, #dc3545);
+}
+
+.dialog-content {
+  padding: 1.5rem;
+}
+
+.assignment-summary {
+  margin-bottom: 1.5rem;
+}
+
+.assignment-summary h4 {
+  margin: 0 0 1rem 0;
+  color: var(--automotive-color-text-dark, #212529);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.assignment-details {
+  background-color: var(--automotive-color-surface, #f8f9fa);
+  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid var(--automotive-color-border, #dee2e6);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  font-weight: 500;
+  color: var(--automotive-color-text-secondary, #6c757d);
+  flex: 0 0 40%;
+}
+
+.detail-row .value {
+  color: var(--automotive-color-text-dark, #212529);
+  font-weight: 500;
+  text-align: right;
+}
+
+.validation-success {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--automotive-color-success-light, #d4edda);
+  border: 1px solid var(--automotive-color-success, #28a745);
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.success-icon {
+  margin-right: 0.75rem;
+  font-size: 1.2em;
+}
+
+.success-message {
+  color: var(--automotive-color-success-dark, #155724);
+  font-weight: 500;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--automotive-color-border, #dee2e6);
+  background-color: var(--automotive-color-surface, #f8f9fa);
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  min-width: 120px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--automotive-color-secondary, #6c757d);
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--automotive-color-secondary-dark, #545b62);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background-color: var(--automotive-color-primary, #0066cc);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--automotive-color-primary-dark, #0052a3);
+  transform: translateY(-1px);
+}
+
+.btn-warning {
+  background-color: var(--automotive-color-warning, #ffc107);
+  color: var(--automotive-color-text-dark, #212529);
+}
+
+.btn-warning:hover:not(:disabled) {
+  background-color: var(--automotive-color-warning-dark, #e0a800);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .assignment-validation-dialog-overlay {
+    padding: 0.5rem;
+  }
+  
+  .assignment-validation-dialog {
+    max-height: 95vh;
+  }
+  
+  .dialog-header,
+  .dialog-content,
+  .dialog-actions {
+    padding: 1rem;
+  }
+  
+  .dialog-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .btn:last-child {
+    margin-bottom: 0;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .detail-row .label {
+    flex: none;
+  }
+  
+  .detail-row .value {
+    text-align: left;
+    font-weight: 600;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .assignment-validation-dialog {
+    background: var(--automotive-color-dark, #343a40);
+    color: var(--automotive-color-text-light, #f8f9fa);
+  }
+  
+  .dialog-header {
+    background-color: var(--automotive-color-dark-surface, #495057);
+    border-bottom-color: var(--automotive-color-dark-border, #495057);
+  }
+  
+  .dialog-actions {
+    background-color: var(--automotive-color-dark-surface, #495057);
+    border-top-color: var(--automotive-color-dark-border, #495057);
+  }
+  
+  .assignment-details {
+    background-color: var(--automotive-color-dark-surface, #495057);
+    border-color: var(--automotive-color-dark-border, #495057);
+  }
+  
+  .validation-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+  }
+}

@@ -1,0 +1,183 @@
+.conflict-notifications {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 400px;
+  max-width: calc(100vw - 40px);
+  z-index: 999;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.notifications-header {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-bottom: none;
+  padding: 12px 16px;
+  border-radius: 8px 8px 0 0;
+}
+
+.notifications-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.notifications-header small {
+  color: #7f1d1d;
+  font-size: 0.875rem;
+}
+
+.notifications-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #fecaca;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  background-color: white;
+}
+
+.conflict-notification {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.conflict-notification:last-child {
+  border-bottom: none;
+}
+
+.conflict-notification:hover {
+  background-color: #f9fafb;
+}
+
+.conflict-notification.high {
+  border-left: 4px solid #dc2626;
+}
+
+.conflict-notification.medium {
+  border-left: 4px solid #f59e0b;
+}
+
+.conflict-notification.low {
+  border-left: 4px solid #3b82f6;
+}
+
+.conflict-icon {
+  font-size: 1.25rem;
+  margin-right: 12px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.conflict-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.conflict-title {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+}
+
+.conflict-message {
+  color: #4b5563;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.affected-assignments {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.conflict-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.resolve-btn,
+.dismiss-btn {
+  padding: 4px 8px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resolve-btn {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.resolve-btn:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.dismiss-btn {
+  background-color: white;
+  color: #6b7280;
+  border-color: #d1d5db;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.dismiss-btn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .conflict-notifications {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-width: none;
+  }
+  
+  .conflict-notification {
+    padding: 10px 12px;
+  }
+  
+  .conflict-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .resolve-btn {
+    font-size: 0.75rem;
+    padding: 6px 8px;
+  }
+}

@@ -7,10 +7,11 @@ interface PlanningCellProps {
   stationId: string
   shiftId: string
   date: Date
-  assignment?: Assignment
-  employee?: Employee
+  assignments: Assignment[]
+  employees: Employee[]
   coverage?: CoverageStatus
   violations: ConstraintViolation[]
+  capacity: number
   onAssignmentDrop: (employeeId: string, stationId: string, shiftId: string, date: Date) => void
   onAssignmentDelete: (assignmentId: string) => void
 }
@@ -19,10 +20,11 @@ export const PlanningCell: React.FC<PlanningCellProps> = ({
   stationId,
   shiftId,
   date,
-  assignment,
-  employee,
+  assignments,
+  employees,
   coverage,
   violations,
+  capacity,
   onAssignmentDrop,
   onAssignmentDelete
 }) => {
@@ -71,6 +73,10 @@ export const PlanningCell: React.FC<PlanningCellProps> = ({
     isOver && canDrop ? 'drop-target-active' : '',
     isOver && !canDrop ? 'drop-target-invalid' : ''
   ].filter(Boolean).join(' ')
+
+  // Get the first assignment for this cell (assuming single assignment per cell for now)
+  const assignment = assignments.length > 0 ? assignments[0] : null
+  const employee = assignment ? employees.find(emp => emp.id === assignment.employeeId) : null
 
   return (
     <div ref={drop} className={cellClasses}>

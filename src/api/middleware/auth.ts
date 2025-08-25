@@ -101,3 +101,11 @@ export const requireRole = (allowedRoles: string[]) => {
     next();
   };
 };
+
+// Simple auth requirement middleware (no role checking)
+export const requireAuth = (allowedRoles?: string[]) => {
+  if (allowedRoles) {
+    return requireRole(allowedRoles);
+  }
+  return authMiddleware;
+};

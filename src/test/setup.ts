@@ -23,6 +23,15 @@ console.log = (...args: any[]) => {
 beforeAll(async () => {
   // Setup test database and other global test configuration
   console.log('Setting up test environment...');
+  
+  // Initialize database with migrations
+  try {
+    const { runMigrations } = await import('../database/migrate.js');
+    await runMigrations();
+    console.log('Database migrations completed');
+  } catch (error) {
+    console.error('Failed to run database migrations:', error);
+  }
 });
 
 afterAll(async () => {
